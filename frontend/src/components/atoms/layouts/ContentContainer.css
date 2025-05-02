@@ -1,0 +1,60 @@
+.content-container {
+  width: 100%;
+}
+
+/* 最大幅の設定 */
+.content-container.max-width-xs {
+  max-width: 480px;
+}
+
+.content-container.max-width-sm {
+  max-width: 600px;
+}
+
+.content-container.max-width-md {
+  max-width: 960px;
+}
+
+.content-container.max-width-lg {
+  max-width: 1280px;
+}
+
+.content-container.max-width-xl {
+  max-width: 1920px;
+}
+
+.content-container.max-width-full {
+  max-width: 100%;
+}
+
+/* 中央配置 */
+.content-container.centered {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* パディング設定 */
+.content-container.with-horizontal-padding {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.content-container.with-vertical-padding {
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+/* レスポンシブデザイン */
+@media (min-width: 768px) {
+  .content-container.with-horizontal-padding {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .content-container.with-horizontal-padding {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
