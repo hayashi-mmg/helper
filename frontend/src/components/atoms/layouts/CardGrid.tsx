@@ -81,7 +81,7 @@ export const CardGrid: React.FC<CardGridProps> = ({
   
   return (
     <div className={containerClasses} style={mergedStyles}>
-      {React.Children.map(children, child => (
+      {React.Children.map(children ?? [], child => (
         <div className="card-grid__item">
           {child}
         </div>
