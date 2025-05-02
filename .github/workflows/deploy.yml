@@ -1,0 +1,100 @@
+name: Deploy SSL Port Fix
+
+on:
+  workflow_dispatch:  # 手動実行用
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+      with:
+        driver: docker-container
+        buildkitd-flags: --allow-insecure-entitlement security.insecure --allow-insecure-entitlement network.host
+      
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        
+    - name: Build and push SSL-fixed frontend
+      uses: docker/build-push-action@v4
+      with:
+        context: ./frontend
+        file: ./frontend/Dockerfile.443-fix
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/cms-frontend:ssl-fix
+        load: false
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build-and-push]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Make deployment scripts executable
+      run: |
+        chmod +x deploy/fix-ssl-now.sh
+        chmod +x deploy/check-nginx-config.sh
+      
+    - name: Copy deployment files to VPS
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        port: ${{ secrets.VPS_PORT }}
+        source: "deploy/fix-ssl-now.sh,deploy/check-nginx-config.sh,frontend/Dockerfile.443-fix"
+        target: "/home/haya/project/cms"
+        strip_components: 0
+        
+    - name: Fix SSL on VPS via SSH
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        port: ${{ secrets.VPS_PORT }}
+        envs: DOCKERHUB_USERNAME
+        script: |
+          export DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
+          cd /home/haya/project/cms
+          
+          # 修正スクリプトを実行
+          chmod +x deploy/fix-ssl-now.sh
+          chmod +x deploy/check-nginx-config.sh
+          ./deploy/fix-ssl-now.sh
+          
+          # Docker Compose設定を修正
+          cd deploy
+          cp docker-compose.prod.yml docker-compose.prod.yml.bak
+          
+          # フロントエンドイメージを修正版に変更
+          sed -i "s|image: ${DOCKERHUB_USERNAME:-hayashiei}/cms-frontend:latest|image: ${DOCKERHUB_USERNAME:-hayashiei}/cms-frontend:ssl-fix|g" docker-compose.prod.yml
+          
+          # コンテナを再起動
+          docker-compose -f docker-compose.prod.yml down
+          docker-compose -f docker-compose.prod.yml up -d
+          
+          # Nginx設定を確認
+          ./check-nginx-config.sh
+          
+          # ポート確認
+          echo "ポート確認:"
+          netstat -tlnp 2>/dev/null | grep -E ':80|:443' || echo "ポート情報を取得できません"
+          
+          # ファイアウォール設定の確認（可能な場合）
+          if command -v ufw &> /dev/null; then
+            echo "ファイアウォール設定:"
+            sudo -n ufw status | grep -E '443|https' || echo "ファイアウォール情報を取得できません"
+            # 443ポートが開放されていない場合
+            sudo -n ufw status | grep -E '443|https' > /dev/null || echo "警告: 443ポートが開放されていない可能性があります"
+          fi
