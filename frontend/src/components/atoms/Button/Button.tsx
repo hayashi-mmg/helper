@@ -1,10 +1,11 @@
 import React from 'react';
-import './Button.css';
+import { Button as MuiButton, ButtonProps as MuiButtonProps, CircularProgress } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 /**
  * ボタンコンポーネントのProps型定義
  */
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends Omit<MuiButtonProps, 'variant' | 'size'> {
     /** ボタンの見た目のバリエーション */
     variant?: 'primary' | 'secondary' | 'outline' | 'text';
     /** ボタンのサイズ */
@@ -21,8 +22,18 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
     className?: string;
 }
 
+// カスタムスタイル付きのMUIボタン
+const StyledButton = styled(MuiButton, {
+    shouldForwardProp: (prop: string) => prop !== 'loading',
+})<{ loading?: boolean }>(({ loading }) => ({
+    position: 'relative',
+    '& .MuiCircularProgress-root': {
+        marginRight: '8px',
+    },
+}));
+
 /**
- * ユーザーのアクションを促すための汎用的なボタンUIを提供するコンポーネント
+ * MUIを活用した、ユーザーのアクションを促すための汎用的なボタンUIを提供するコンポーネント
  * 
  * @param {ButtonProps} props - ボタンコンポーネントのプロパティ
  * @returns {JSX.Element} - ボタンコンポーネント
@@ -39,80 +50,73 @@ export const Button: React.FC<ButtonProps> = ({
     ...props
 }) => {
     /**
-     * バリアントに基づいたクラス名を生成する
-     * @returns {string} - バリアントに対応するクラス名
+     * カスタムバリアントをMUI用のバリアントにマッピングする
+     * @returns {MuiButtonProps['variant']} - MUIのバリアント
      */
-    const getVariantClass = (): string => {
+    const getMuiVariant = (): MuiButtonProps['variant'] => {
         switch (variant) {
             case 'primary':
-                return 'btn-primary';
+                return 'contained';
             case 'secondary':
-                return 'btn-secondary';
+                return 'contained';
             case 'outline':
-                return 'btn-outline';
+                return 'outlined';
             case 'text':
-                return 'btn-text';
+                return 'text';
             default:
-                return 'btn-primary';
+                return 'contained';
         }
     };
 
     /**
-     * サイズに基づいたクラス名を生成する
-     * @returns {string} - サイズに対応するクラス名
+     * カスタムバリアントをMUI用のカラーにマッピングする
+     * @returns {MuiButtonProps['color']} - MUIのカラー
      */
-    const getSizeClass = (): string => {
+    const getMuiColor = (): MuiButtonProps['color'] => {
+        switch (variant) {
+            case 'primary':
+                return 'primary';
+            case 'secondary':
+                return 'secondary';
+            default:
+                return 'primary';
+        }
+    };
+
+    /**
+     * カスタムサイズをMUI用のサイズにマッピングする
+     * @returns {MuiButtonProps['size']} - MUIのサイズ
+     */
+    const getMuiSize = (): MuiButtonProps['size'] => {
         switch (size) {
             case 'small':
-                return 'btn-small';
+                return 'small';
             case 'medium':
-                return 'btn-medium';
+                return 'medium';
             case 'large':
-                return 'btn-large';
+                return 'large';
             default:
-                return 'btn-medium';
+                return 'medium';
         }
-    };
-
-    /**
-     * 状態に基づいたクラス名を生成する
-     * @returns {string} - 状態に対応するクラス名
-     */
-    const getStateClass = (): string => {
-        return [
-            loading ? 'btn-loading' : '',
-            disabled ? 'btn-disabled' : '',
-        ].filter(Boolean).join(' ');
-    };
-
-    // 最終的なクラス名の組み立て
-    const buttonClasses = [
-        'btn',
-        getVariantClass(),
-        getSizeClass(),
-        getStateClass(),
-        className
-    ].filter(Boolean).join(' ');
-
-    return (
-        <button
-            className={buttonClasses}
+    };    return (
+        <StyledButton
+            variant={getMuiVariant()}
+            color={getMuiColor()}
+            size={getMuiSize()}
             disabled={disabled || loading}
+            startIcon={!loading && startIcon}
+            endIcon={!loading && endIcon}
+            className={className}
+            loading={loading}
             aria-busy={loading}
             {...props}
         >
-            {startIcon && <span className="btn-icon btn-icon-start">{startIcon}</span>}
-            {loading ? (
-                <>
-                    <span className="btn-loading-spinner" />
-                    {children}
-                </>
-            ) : (
-                children
-            )}
-            {endIcon && <span className="btn-icon btn-icon-end">{endIcon}</span>}
-        </button>
+            {loading && <CircularProgress size={20} color="inherit" />}
+            {children}
+        </StyledButton>
     );
 };
+
+export default Button;
 
 export default Button;
