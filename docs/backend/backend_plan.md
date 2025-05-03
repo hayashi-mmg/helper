@@ -8,7 +8,7 @@
 - [x] `requirements.txt`の作成
 - [x] データベース接続設定（PostgreSQL）
 - [x] Redis設定
-- [ ] Alembicマイグレーション初期化
+- [x] Alembicマイグレーション初期化
 - [ ] Dockerfileの作成
 - [ ] docker-compose.ymlの作成
 - [ ] 開発・テスト・本番環境の設定分離

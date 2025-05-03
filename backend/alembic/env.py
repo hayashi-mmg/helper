@@ -14,16 +14,16 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# add your model's MetaData object here
-# for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
-target_metadata = None
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'app')))
+from app.config import settings
+from app.db.base import Base
+target_metadata = Base.metadata
 
-# other values from the config, defined by the needs of env.py,
-# can be acquired:
-# my_important_option = config.get_main_option("my_important_option")
-# ... etc.
+
+# DB URLを設定ファイルから取得
+config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL", getattr(settings, "DATABASE_URL", "postgresql+asyncpg://postgres:postgres@db:5432/markdown_cms")))
 
 
 def run_migrations_offline() -> None:

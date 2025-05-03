@@ -1,4 +1,5 @@
 """
-SQLAlchemy Baseモデル定義（ダミー）。
+SQLAlchemy Baseモデル定義
 """
-# 実装時にBase = declarative_base()等を追加
+from sqlalchemy.orm import declarative_base
+Base = declarative_base()
