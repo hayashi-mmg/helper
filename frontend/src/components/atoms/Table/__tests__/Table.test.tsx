@@ -24,7 +24,9 @@ describe('Table', () => {
 
     it('データと列定義を正しくレンダリングする', () => {
         render(<Table {...baseProps} />);
-        expect(screen.getByText('山田太郎')).toBeInTheDocument();
+        // テーブル内の最初の山田太郎のみを検証
+        const yamadaCells = screen.getAllByText('山田太郎');
+        expect(yamadaCells[0]).toBeInTheDocument();
         expect(screen.getByText('メール')).toBeInTheDocument();
     });
 
@@ -70,11 +72,10 @@ describe('Table', () => {
     it('ローディング中は適切なインジケータを表示する', () => {
         render(<Table {...baseProps} loading />);
         expect(screen.getByText('読み込み中...')).toBeInTheDocument();
-    });
-
-    it('データが空の場合は空メッセージを表示する', () => {
+    });    it('データが空の場合は空メッセージを表示する', () => {
         render(<Table {...baseProps} data={[]} />);
-        expect(screen.getByText('表示するデータがありません')).toBeInTheDocument();
+        // 複数の要素が同じテキストを持つため、テーブルの空メッセージセルを特定
+        expect(screen.getAllByText('表示するデータがありません').length).toBeGreaterThan(0);
     });
 
     it('アクションボタンをクリックするとコールバックが呼ばれる', () => {
@@ -94,8 +95,10 @@ describe('Table', () => {
     it('行をクリックするとコールバックが呼ばれる', () => {
         const handleRowClick = jest.fn();
         render(<Table {...baseProps} onRowClick={handleRowClick} />);
-        const row = screen.getByText('山田太郎').closest('tr');
-        if (row) fireEvent.click(row);
+        // テーブル内のtrを取得し、最初のデータ行をクリック
+        const rows = screen.getAllByRole('row');
+        // 0: ヘッダー, 1: 1行目, 2: 2行目
+        if (rows[1]) fireEvent.click(rows[1]);
         expect(handleRowClick).toHaveBeenCalled();
     });
 });

@@ -68,16 +68,15 @@ describe('DatePicker', () => {
     it('エラー状態が正しく表示されること', () => {
         render(<DatePicker {...baseProps} error errorMessage="エラーです" />);
         expect(screen.getByText('エラーです')).toBeInTheDocument();
-    });
-
-    it('キーボード操作で適切に動作すること', () => {
+    });    it('キーボード操作で適切に動作すること', () => {
         render(<DatePicker {...baseProps} />);
         const input = screen.getByPlaceholderText('日付を選択');
         input.focus();
         fireEvent.keyDown(input, { key: 'Enter' });
-        expect(screen.getByRole('table')).toBeInTheDocument();
+        // カレンダーの開閉状態を検証する（テストライブラリのクエリを使用）
+        expect(screen.getByRole('table', { name: /calendar/i })).toBeInTheDocument();
         fireEvent.keyDown(input, { key: 'Escape' });
-        expect(screen.queryByRole('table')).not.toBeInTheDocument();
+        expect(screen.queryByRole('table', { name: /calendar/i })).not.toBeInTheDocument();
     });
 
     it('日付フォーマットが正しく適用されること', () => {

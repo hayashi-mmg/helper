@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import classNames from 'classnames';
 import './CardGrid.css';
 
@@ -44,7 +44,7 @@ export interface CardGridProps {
 }
 
 export const CardGrid: React.FC<CardGridProps> = ({
-  children,
+  children = null,
   gap = 16,
   columns = { sm: 1, md: 2, lg: 3, xl: 4 },
   equalWidth = true,
@@ -81,7 +81,7 @@ export const CardGrid: React.FC<CardGridProps> = ({
   
   return (
     <div className={containerClasses} style={mergedStyles}>
-      {React.Children.map(children ?? [], child => (
+      {React.Children.map(children, child => (
         <div className="card-grid__item">
           {child}
         </div>

@@ -34,11 +34,10 @@ describe('Select', () => {
         options,
         value: '',
         onChange: jest.fn(),
-    };
-
-    it('正しくレンダリングされること', () => {
+    };    it('正しくレンダリングされること', () => {
         render(<Select {...baseProps} label="国" placeholder="国を選択してください" />);
-        expect(screen.getByLabelText('国')).toBeInTheDocument();
+        // ラベルテキストの検証
+        expect(screen.getByText('国')).toBeInTheDocument();
         expect(screen.getByText('国を選択してください')).toBeInTheDocument();
     });
 

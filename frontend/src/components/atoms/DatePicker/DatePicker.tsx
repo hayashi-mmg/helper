@@ -254,8 +254,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
                     >
                         &gt;
                     </button>
-                </div>
-                <table className="date-picker-table">
+                </div>                <table className="date-picker-table" role="table" aria-label="calendar">
                     <thead>
                         <tr>
                             {weekDays.map((day, idx) => (
