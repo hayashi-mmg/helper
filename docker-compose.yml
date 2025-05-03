@@ -3,8 +3,8 @@ version: '3.8'
 services:
   backend:
     build:
-      context: ./backend
-      dockerfile: ../docker/backend/Dockerfile
+      context: ./docker/backend
+      dockerfile: Dockerfile
     volumes:
       - ./backend:/app
     environment:

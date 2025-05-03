@@ -1,23 +1,11 @@
-FROM python:3.10-slim
+FROM python:3.9-slim
 
-WORKDIR /app/
+WORKDIR /app
 
-# 必要なパッケージをインストール
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+COPY requirements.txt .
 
-# 依存関係をコピーしてインストール
-COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
-# アプリケーションコードをコピー
-COPY . /app/
+COPY . .
 
-# 起動スクリプトをコピーして実行権限を付与
-COPY ./docker/backend/start.sh /start.sh
-RUN chmod +x /start.sh
-
-# 起動
-CMD ["/start.sh"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
