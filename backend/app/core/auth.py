@@ -45,7 +45,7 @@ def create_access_token(data: Dict[str, Any], expires_delta: Optional[timedelta]
     to_encode = data.copy()
     expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, settings.secretKey, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, settings.secret_key, algorithm=ALGORITHM)
     return encoded_jwt
 
 def create_refresh_token(data: Dict[str, Any]) -> str:
@@ -57,7 +57,7 @@ def create_refresh_token(data: Dict[str, Any]) -> str:
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, settings.secretKey, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, settings.secret_key, algorithm=ALGORITHM)
     return encoded_jwt
 
 def decode_jwt_token(token: str) -> Dict[str, Any]:
@@ -67,4 +67,4 @@ def decode_jwt_token(token: str) -> Dict[str, Any]:
     :return: デコード済みペイロード
     :raises: JWTError
     """
-    return jwt.decode(token, settings.secretKey, algorithms=[ALGORITHM])
+    return jwt.decode(token, settings.secret_key, algorithms=[ALGORITHM])
