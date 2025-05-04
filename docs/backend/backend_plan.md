@@ -72,11 +72,11 @@
 ## フェーズ3: APIエンドポイント実装 (2週間)
 
 ### 認証関連エンドポイント
-- [ ] `/api/v1/auth/login` エンドポイント実装
-- [ ] `/api/v1/auth/register` エンドポイント実装
-- [ ] `/api/v1/auth/refresh` エンドポイント実装
-- [ ] `/api/v1/auth/password-reset` エンドポイント実装
-- [ ] `/api/v1/auth/password-reset/confirm` エンドポイント実装
+- [x] `/api/v1/auth/login` エンドポイント実装
+- [x] `/api/v1/auth/register` エンドポイント実装
+- [x] `/api/v1/auth/refresh` エンドポイント実装
+- [x] `/api/v1/auth/password-reset` エンドポイント実装
+- [x] `/api/v1/auth/password-reset/confirm` エンドポイント実装
 
 ### ユーザー・ヘルパー関連エンドポイント
 - [ ] `/api/v1/users/me` エンドポイント実装
