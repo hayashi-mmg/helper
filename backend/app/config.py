@@ -51,6 +51,7 @@ class Settings(BaseSettings):
     
     # ファイル保存設定
     media_root: str = "/app/media"
+    MEDIA_DIR: str = "/app/media"  # 画像、QRコード等のメディアファイル保存ディレクトリ
     base_url: str = "http://localhost:8000"
     
     # URL設定

@@ -117,11 +117,11 @@
 - [x] `/api/v1/qrcodes/batch` 一括生成エンドポイント実装
 
 ### フィードバック機能
-- [ ] `/api/v1/feedback` エンドポイント実装
-- [ ] `/api/v1/feedback/{feedback_id}` エンドポイント実装
-- [ ] `/api/v1/feedback/{feedback_id}/response` エンドポイント実装
-- [ ] `/api/v1/recipe-requests/{request_id}/feedback` エンドポイント実装
-- [ ] 画像アップロード処理実装
+- [x] `/api/v1/feedback` エンドポイント実装
+- [x] `/api/v1/feedback/{feedback_id}` エンドポイント実装
+- [x] `/api/v1/feedback/{feedback_id}/response` エンドポイント実装
+- [x] `/api/v1/recipe-requests/{request_id}/feedback` エンドポイント実装
+- [x] 画像アップロード処理実装
 
 ## フェーズ5: パフォーマンス最適化とセキュリティ (1週間)
 

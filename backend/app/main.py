@@ -2,14 +2,18 @@
 FastAPIエントリーポイント。
 """
 import logging
+import os
+from pathlib import Path
 from fastapi import FastAPI, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.v1.router import router as v1_router
 from app.database import get_db
 from app.exceptions import setup_exception_handlers
 from app.logs.middleware import LoggingMiddleware
 from app.logs.async_log_handler import async_log_handler
+from app.config import settings
 
 # ロガー設定
 logging.basicConfig(
@@ -34,6 +38,13 @@ app.add_middleware(LoggingMiddleware)
 
 # 例外ハンドラのセットアップ
 setup_exception_handlers(app)
+
+# メディアディレクトリの設定
+media_dir = os.path.abspath(settings.MEDIA_DIR)
+os.makedirs(media_dir, exist_ok=True)
+
+# 静的ファイルのマウント
+app.mount("/media", StaticFiles(directory=media_dir), name="media")
 
 # ルーター追加
 app.include_router(v1_router, prefix="/api/v1")

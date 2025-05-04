@@ -3,11 +3,12 @@
 """
 from typing import List, Optional, Dict, Any
 from datetime import date
-from fastapi import APIRouter, Depends, HTTPException, Query, status, Body
+from fastapi import APIRouter, Depends, HTTPException, Query, status, Body, Path
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.recipe_request import crud_recipe_request
 from app.crud.users import crud_user
+from app.crud.feedback import feedback as crud_feedback
 from app.db.models.user import User, UserRole
 from app.db.models.recipe_request import RecipeRequestStatus
 from app.core.auth import get_current_active_user
@@ -18,6 +19,7 @@ from app.schemas.recipe_request import (
     RecipeRequestUpdate,
     RecipeRequestResponse
 )
+from app.schemas.feedback import FeedbackResponse
 
 router = APIRouter(prefix="/recipe-requests", tags=["recipe-requests"])
 
@@ -430,3 +432,40 @@ async def create_recipe_request_from_url(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"レシピの解析と保存中にエラーが発生しました: {str(e)}"
         )
+
+
+@router.get("/{request_id}/feedback", response_model=List[FeedbackResponse])
+async def read_recipe_request_feedback(
+    request_id: int = Path(..., title="料理リクエストID"),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
+    """
+    特定の料理リクエストに関連するフィードバック一覧を取得します。
+    一般ユーザーは自分のリクエストに関連するフィードバックのみ閲覧可能です。
+    ヘルパーは担当ユーザーのフィードバックを閲覧可能です。
+    管理者はすべてのフィードバックを閲覧可能です。
+    """
+    # リクエストの存在確認
+    recipe_request = await crud_recipe_request.get(db, id=request_id)
+    if not recipe_request:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="指定された料理リクエストが見つかりません。"
+        )
+    
+    # 管理者は全てのフィードバックにアクセス可能
+    if current_user.role == UserRole.ADMIN:
+        return await crud_feedback.get_by_recipe_request(db, recipe_request_id=request_id)
+    
+    # ヘルパーは担当ユーザーのフィードバックにアクセス可能
+    # TODO: ヘルパーの担当ユーザー確認処理
+    
+    # 一般ユーザーは自分のリクエストに関連するフィードバックのみアクセス可能
+    if recipe_request.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="このリクエストに関連するフィードバックにアクセスする権限がありません。"
+        )
+    
+    return await crud_feedback.get_by_recipe_request(db, recipe_request_id=request_id)
