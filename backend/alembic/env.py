@@ -22,8 +22,12 @@ from app.db.base import Base
 target_metadata = Base.metadata
 
 
-# DB URLを設定ファイルから取得
-config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL", getattr(settings, "DATABASE_URL", "postgresql+asyncpg://postgres:postgres@db:5432/markdown_cms")))
+
+# DB URLを設定ファイルから取得し、同期用に変換
+db_url = os.getenv("DATABASE_URL", getattr(settings, "DATABASE_URL", "postgresql+asyncpg://postgres:postgres@db:5432/markdown_cms"))
+if db_url.startswith("postgresql+asyncpg"):
+    db_url = db_url.replace("postgresql+asyncpg", "postgresql")
+config.set_main_option("sqlalchemy.url", db_url)
 
 
 def run_migrations_offline() -> None:

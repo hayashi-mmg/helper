@@ -1,1 +1,1 @@
-# modelsパッケージ初期化
+from .user import User
