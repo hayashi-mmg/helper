@@ -24,7 +24,7 @@ from app.schemas.feedback import FeedbackResponse
 router = APIRouter(prefix="/recipe-requests", tags=["recipe-requests"])
 
 
-@router.post("/", response_model=RecipeRequestResponse)
+@router.post("/", response_model=RecipeRequestResponse, status_code=status.HTTP_201_CREATED)
 async def create_recipe_request(
     recipe_request: RecipeRequestCreate,
     db: AsyncSession = Depends(get_db),
@@ -32,8 +32,17 @@ async def create_recipe_request(
 ):
     """
     新しい料理リクエストを作成します。
+    
     一般ユーザーは自分のリクエストのみ作成可能です。
     管理者は任意のユーザーのリクエストを作成可能です。
+    
+    バリデーション:
+    - リクエストタイトルは1〜200文字で必須
+    - 説明は必須
+    - レシピURLまたはレシピ内容のいずれかが必要
+    - URLが指定された場合、有効なフォーマットであること
+    - 予定日は現在以降の日付であること
+    - 優先度は0〜5の整数であること
     """
     # リクエスト対象ユーザーの存在確認
     target_user = await crud_user.get(db, id=recipe_request.user_id)
@@ -159,8 +168,8 @@ async def read_recipe_request(
 
 @router.put("/{request_id}", response_model=RecipeRequestResponse)
 async def update_recipe_request(
-    request_id: int,
-    recipe_request_update: RecipeRequestUpdate,
+    request_id: int = Path(..., gt=0, description="更新する料理リクエストID"),
+    recipe_request_update: RecipeRequestUpdate = Body(..., description="更新データ"),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
@@ -345,11 +354,13 @@ async def parse_recipe_url(
         )
 
 
-@router.post("/from-url", response_model=RecipeRequestResponse)
+@router.post("/from-url", response_model=RecipeRequestResponse, status_code=status.HTTP_201_CREATED)
 async def create_recipe_request_from_url(
-    url: str = Body(...),
-    scheduled_date: Optional[date] = Body(None),
-    user_id: Optional[int] = Body(None),
+    url: str = Body(..., description="レシピサイトのURL"),
+    scheduled_date: Optional[date] = Body(None, description="予定日（オプション）"),
+    priority: int = Body(3, ge=0, le=5, description="優先度（0-5）"),
+    notes: Optional[str] = Body(None, description="特記事項（オプション）"),
+    user_id: Optional[int] = Body(None, description="リクエスト対象のユーザーID（管理者のみ指定可能）"),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
@@ -360,17 +371,35 @@ async def create_recipe_request_from_url(
     Args:
         url: レシピサイトのURL
         scheduled_date: 予定日（オプション）
+        priority: 優先度（0-5の整数、デフォルト3）
+        notes: 特記事項（オプション）
         user_id: リクエスト対象のユーザーID（管理者のみ指定可能、未指定時は自分自身）
     
     Returns:
         作成された料理リクエスト
+    
+    Raises:
+        HTTPException:
+            - 400: 無効なURL形式、サポートされていないレシピサイト、解析エラー
+            - 403: 権限エラー（他ユーザーのリクエスト作成権限なし）
+            - 404: 指定されたユーザーが存在しない
+            - 422: バリデーションエラー
+            - 500: サーバー側でのエラー
     """
     # URLのバリデーション
-    if not RecipeUrlValidator.validate(url):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="無効なURLです。正しいレシピサイトのURLを入力してください。"
-        )
+    try:
+        if not RecipeUrlValidator.validate(url):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="無効なURLです。正しいレシピサイトのURLを入力してください。"
+            )
+            
+        # 日付のバリデーション
+        if scheduled_date is not None and scheduled_date < date.today():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="予定日は今日以降の日付を指定してください。"
+            )
     
     # ユーザーIDの設定（管理者は他ユーザーも指定可能）
     target_user_id = current_user.id

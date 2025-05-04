@@ -1,21 +1,47 @@
 """
 フィードバックのスキーマ定義
 """
-from typing import Optional
-from pydantic import BaseModel, Field, HttpUrl
+from typing import Optional, Dict, Any
+from pydantic import BaseModel, Field, validator, root_validator
 from datetime import datetime
+from app.schemas.validators import validate_url, validate_comments
 
 class FeedbackBase(BaseModel):
     """フィードバック基本スキーマ"""
-    recipe_request_id: int
-    user_id: int
-    taste_rating: int = Field(..., ge=1, le=5)
-    texture_rating: int = Field(..., ge=1, le=5)
-    quantity_rating: int = Field(..., ge=1, le=5)
-    overall_rating: int = Field(..., ge=1, le=5)
-    comments: Optional[str] = None
-    request_for_next: Optional[str] = None
-    photo_url: Optional[str] = None
+    recipe_request_id: int = Field(..., description="料理リクエストID")
+    user_id: int = Field(..., description="ユーザーID")
+    taste_rating: int = Field(..., ge=1, le=5, description="味の評価 (1-5)")
+    texture_rating: int = Field(..., ge=1, le=5, description="食感の評価 (1-5)")
+    quantity_rating: int = Field(..., ge=1, le=5, description="量の評価 (1-5)")
+    overall_rating: int = Field(..., ge=1, le=5, description="全体的な評価 (1-5)")
+    comments: Optional[str] = Field(None, max_length=1000, description="コメント")
+    request_for_next: Optional[str] = Field(None, max_length=500, description="次回のリクエスト")
+    photo_url: Optional[str] = Field(None, description="写真のURL")
+    
+    # コメントのバリデーション
+    _validate_comments = validator('comments', allow_reuse=True, pre=True)(validate_comments)
+    
+    # 写真URLのバリデーション
+    _validate_url = validator('photo_url', allow_reuse=True, pre=True)(validate_url)
+    
+    @root_validator
+    def calculate_overall_rating(cls, values):
+        """
+        全体的な評価が指定されていない場合、他の評価の平均値を計算
+        """
+        if 'overall_rating' not in values or values['overall_rating'] is None:
+            ratings = [values.get('taste_rating'), values.get('texture_rating'), values.get('quantity_rating')]
+            ratings = [r for r in ratings if r is not None]
+            if ratings:
+                values['overall_rating'] = round(sum(ratings) / len(ratings))
+        return values
+        
+    @validator('request_for_next')
+    def validate_request_length(cls, v):
+        """リクエストの長さ検証"""
+        if v is not None and len(v) < 5:
+            raise ValueError("次回のリクエストは5文字以上で入力してください")
+        return v
 
 class FeedbackCreate(FeedbackBase):
     """フィードバック作成スキーマ"""
