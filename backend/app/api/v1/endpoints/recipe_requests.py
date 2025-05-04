@@ -1,9 +1,9 @@
 """
 料理リクエスト関連のAPIエンドポイント
 """
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from datetime import date
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.recipe_request import crud_recipe_request
@@ -12,6 +12,7 @@ from app.db.models.user import User, UserRole
 from app.db.models.recipe_request import RecipeRequestStatus
 from app.core.auth import get_current_active_user
 from app.database import get_db
+from app.services.recipe_parser import RecipeParserFactory, RecipeUrlValidator
 from app.schemas.recipe_request import (
     RecipeRequestCreate,
     RecipeRequestUpdate,
@@ -46,6 +47,37 @@ async def create_recipe_request(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="他のユーザーのリクエストは作成できません。"
         )
+    
+    # URLが指定されている場合、自動で解析
+    if recipe_request.recipe_url and RecipeUrlValidator.validate(recipe_request.recipe_url):
+        try:
+            parser = RecipeParserFactory.get_parser(recipe_request.recipe_url)
+            recipe_data = await parser.parse(recipe_request.recipe_url)
+            
+            # タイトルが未設定の場合は、取得した情報から設定
+            if recipe_request.title == "レシピリクエスト" or not recipe_request.title:
+                recipe_request.title = recipe_data["title"]
+            
+            # 内容が未設定の場合は、取得した情報から構成
+            if not recipe_request.recipe_content:
+                content = f"# {recipe_data['title']}\n\n"
+                
+                if recipe_data.get("cooking_time"):
+                    content += f"調理時間: {recipe_data['cooking_time']}\n\n"
+                
+                content += "## 材料\n"
+                for ing in recipe_data.get("ingredients", []):
+                    content += f"- {ing['name']}: {ing['quantity']}\n"
+                
+                content += "\n## 手順\n"
+                for step in recipe_data.get("steps", []):
+                    content += f"{step['number']}. {step['text']}\n"
+                
+                content += f"\n\n元のレシピ: {recipe_request.recipe_url}"
+                recipe_request.recipe_content = content
+        except Exception as e:
+            # 解析エラーは無視して続行
+            pass
     
     # リクエスト作成
     db_recipe_request = await crud_recipe_request.create(db, obj_in=recipe_request)
@@ -267,3 +299,134 @@ async def read_user_recipe_requests(
     )
     
     return recipe_requests
+
+
+@router.post("/parse-url", response_model=Dict[str, Any])
+async def parse_recipe_url(
+    url: str = Body(..., embed=True),
+    current_user: User = Depends(get_current_active_user)
+):
+    """
+    レシピサイトのURLを解析し、構造化されたレシピ情報を返します。
+    
+    現在サポートされているサイト:
+    - クックパッド
+    - 楽天レシピ
+    - エキサイトレシピ
+    
+    Args:
+        url: レシピサイトのURL
+    
+    Returns:
+        構造化されたレシピ情報
+    """
+    # URLのバリデーション
+    if not RecipeUrlValidator.validate(url):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="無効なURLです。正しいレシピサイトのURLを入力してください。"
+        )
+    
+    try:
+        # 適切なパーサーの取得と解析実行
+        parser = RecipeParserFactory.get_parser(url)
+        recipe_data = await parser.parse(url)
+        
+        return recipe_data
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"レシピの解析中にエラーが発生しました: {str(e)}"
+        )
+
+
+@router.post("/from-url", response_model=RecipeRequestResponse)
+async def create_recipe_request_from_url(
+    url: str = Body(...),
+    scheduled_date: Optional[date] = Body(None),
+    user_id: Optional[int] = Body(None),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
+    """
+    レシピURLから直接料理リクエストを作成します。
+    URLを解析し、レシピ情報を自動的に抽出してリクエストを作成します。
+    
+    Args:
+        url: レシピサイトのURL
+        scheduled_date: 予定日（オプション）
+        user_id: リクエスト対象のユーザーID（管理者のみ指定可能、未指定時は自分自身）
+    
+    Returns:
+        作成された料理リクエスト
+    """
+    # URLのバリデーション
+    if not RecipeUrlValidator.validate(url):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="無効なURLです。正しいレシピサイトのURLを入力してください。"
+        )
+    
+    # ユーザーIDの設定（管理者は他ユーザーも指定可能）
+    target_user_id = current_user.id
+    if user_id is not None:
+        if current_user.role == UserRole.ADMIN:
+            target_user = await crud_user.get(db, id=user_id)
+            if not target_user:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="指定されたユーザーが見つかりません。"
+                )
+            target_user_id = user_id
+        elif user_id != current_user.id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="他のユーザーのリクエストは作成できません。"
+            )
+    
+    try:
+        # レシピ情報の解析
+        parser = RecipeParserFactory.get_parser(url)
+        recipe_data = await parser.parse(url)
+        
+        # 料理リクエスト作成データの構成
+        content = f"# {recipe_data['title']}\n\n"
+        
+        if recipe_data.get("cooking_time"):
+            content += f"調理時間: {recipe_data['cooking_time']}\n\n"
+        
+        content += "## 材料\n"
+        for ing in recipe_data.get("ingredients", []):
+            content += f"- {ing['name']}: {ing['quantity']}\n"
+        
+        content += "\n## 手順\n"
+        for step in recipe_data.get("steps", []):
+            content += f"{step['number']}. {step['text']}\n"
+        
+        content += f"\n\n元のレシピ: {url}"
+        
+        # リクエストオブジェクト作成
+        recipe_request = RecipeRequestCreate(
+            user_id=target_user_id,
+            title=recipe_data["title"],
+            description=f"「{recipe_data['title']}」の調理リクエスト",
+            recipe_url=url,
+            recipe_content=content,
+            scheduled_date=scheduled_date,
+            status=RecipeRequestStatus.PENDING
+        )
+        
+        # DBに保存
+        db_recipe_request = await crud_recipe_request.create(db, obj_in=recipe_request)
+        return db_recipe_request
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"レシピの解析と保存中にエラーが発生しました: {str(e)}"
+        )
