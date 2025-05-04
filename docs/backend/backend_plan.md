@@ -87,14 +87,14 @@
 - [x] `/api/v1/helpers/{helper_id}/users` エンドポイント実装
 
 ### リクエスト関連エンドポイント
-- [ ] `/api/v1/recipe-requests` エンドポイント実装
-- [ ] `/api/v1/recipe-requests/{request_id}` エンドポイント実装
-- [ ] `/api/v1/recipe-requests/{request_id}/status` エンドポイント実装
-- [ ] `/api/v1/users/{user_id}/recipe-requests` エンドポイント実装
-- [ ] `/api/v1/tasks` エンドポイント実装
-- [ ] `/api/v1/tasks/{task_id}` エンドポイント実装
-- [ ] `/api/v1/tasks/{task_id}/status` エンドポイント実装
-- [ ] `/api/v1/users/{user_id}/tasks` エンドポイント実装
+- [x] `/api/v1/recipe-requests` エンドポイント実装
+- [x] `/api/v1/recipe-requests/{request_id}` エンドポイント実装
+- [x] `/api/v1/recipe-requests/{request_id}/status` エンドポイント実装
+- [x] `/api/v1/users/{user_id}/recipe-requests` エンドポイント実装
+- [x] `/api/v1/tasks` エンドポイント実装
+- [x] `/api/v1/tasks/{task_id}` エンドポイント実装
+- [x] `/api/v1/tasks/{task_id}/status` エンドポイント実装
+- [x] `/api/v1/users/{user_id}/tasks` エンドポイント実装
 
 ## フェーズ4: 拡張機能実装 (2週間)
 
