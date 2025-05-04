@@ -1,0 +1,90 @@
+# Python関連
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# 仮想環境
+venv/
+ENV/
+.env
+
+# データベース
+db/
+*.sqlite3
+*.db
+*.sql
+
+# ログ
+logs/
+*.log
+
+# ユニットテスト/カバレッジレポート
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+.hypothesis/
+
+# IDEとエディタ関連
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# アップロードファイル
+uploads/
+media/
+
+# ビルドファイル
+node_modules/
+dist/
+.next/
+out/
+
+# バックエンドキャッシュ
+backend/**/__pycache__/
+backend/.pytest_cache/
+backend/**/*.pyc
+backend/**/*.pyo
+backend/**/*.pyd
+backend/**/*.so
+backend/**/*.dylib
+backend/**/*.dll
+backend/.mypy_cache/
+
+# フロントエンドビルドアーティファクト
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+frontend/.next/
+frontend/out/
+frontend/.cache/
+frontend/coverage/
+
+# 秘密情報
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
