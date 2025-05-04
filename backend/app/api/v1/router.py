@@ -2,6 +2,7 @@
 API v1 ルーター集約。
 """
 from fastapi import APIRouter
+from .auth import router as auth_router
 
 router = APIRouter()
-# 今後、各エンドポイントをinclude予定
+router.include_router(auth_router)
