@@ -17,6 +17,15 @@ class Settings(BaseSettings):
     smtp_password: str = ""
     smtp_sender: str = "test@example.com"
     frontend_url: str = "http://localhost:8080"
+    
+    # ログ関連設定
+    log_level: str = "INFO"
+    log_to_file: bool = False
+    log_file_path: str = "logs/app.log"
+    
+    # 多言語対応
+    default_language: str = "ja"
+    supported_languages: str = "[\"ja\", \"en\"]"
 
     model_config = SettingsConfigDict(
         env_file = ".env.development",
