@@ -79,12 +79,12 @@
 - [x] `/api/v1/auth/password-reset/confirm` エンドポイント実装
 
 ### ユーザー・ヘルパー関連エンドポイント
-- [ ] `/api/v1/users/me` エンドポイント実装
-- [ ] `/api/v1/users/{user_id}` エンドポイント実装
-- [ ] `/api/v1/helpers/me` エンドポイント実装
-- [ ] `/api/v1/helpers/{helper_id}` エンドポイント実装
-- [ ] `/api/v1/users/{user_id}/helpers` エンドポイント実装
-- [ ] `/api/v1/helpers/{helper_id}/users` エンドポイント実装
+- [x] `/api/v1/users/me` エンドポイント実装
+- [x] `/api/v1/users/{user_id}` エンドポイント実装
+- [x] `/api/v1/helpers/me` エンドポイント実装
+- [x] `/api/v1/helpers/{helper_id}` エンドポイント実装
+- [x] `/api/v1/users/{user_id}/helpers` エンドポイント実装
+- [x] `/api/v1/helpers/{helper_id}/users` エンドポイント実装
 
 ### リクエスト関連エンドポイント
 - [ ] `/api/v1/recipe-requests` エンドポイント実装
