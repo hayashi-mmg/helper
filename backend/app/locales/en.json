@@ -1,0 +1,21 @@
+{
+  "welcome": "Welcome",
+  "login": "Login",
+  "logout": "Logout",
+  "register": "Register",
+  "password_reset": "Password Reset",
+  "email": "Email",
+  "password": "Password",
+  "confirm_password": "Confirm Password",
+  "username": "Username",
+  "invalid_credentials": "Invalid email or password",
+  "email_not_found": "Email not found",
+  "password_reset_success": "Password reset instructions have been sent to your email",
+  "password_reset_confirm_success": "Your password has been successfully changed",
+  "token_invalid": "Invalid or expired token",
+  "email_already_registered": "This email is already registered",
+  "registration_success": "Registration successful. Please check your email",
+  "operation_success": "Operation completed successfully",
+  "operation_failed": "Operation failed",
+  "server_error": "A server error occurred. Please try again later"
+}

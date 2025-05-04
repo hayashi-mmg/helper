@@ -1,0 +1,21 @@
+{
+  "welcome": "ようこそ",
+  "login": "ログイン",
+  "logout": "ログアウト",
+  "register": "登録",
+  "password_reset": "パスワードリセット",
+  "email": "メールアドレス",
+  "password": "パスワード",
+  "confirm_password": "パスワード（確認）",
+  "username": "ユーザー名",
+  "invalid_credentials": "メールアドレスまたはパスワードが無効です",
+  "email_not_found": "そのメールアドレスは登録されていません",
+  "password_reset_success": "パスワードのリセット手順をメールで送信しました",
+  "password_reset_confirm_success": "パスワードが正常に変更されました",
+  "token_invalid": "無効またはタイムアウトしたトークンです",
+  "email_already_registered": "このメールアドレスはすでに登録されています",
+  "registration_success": "登録に成功しました。メールをご確認ください",
+  "operation_success": "操作が正常に完了しました",
+  "operation_failed": "操作に失敗しました",
+  "server_error": "サーバーエラーが発生しました。しばらくしてからもう一度お試しください"
+}
