@@ -5,7 +5,10 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.services import auth_service
-from app.schemas.auth import UserCreate, UserLogin, Token, RefreshToken
+from app.schemas.auth import (
+    UserCreate, UserLogin, Token, RefreshToken, 
+    PasswordResetRequest, PasswordResetConfirm, ResetResponse
+)
 from app.schemas.user import UserResponse
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -59,3 +62,32 @@ async def refresh_token(
     :raises: HTTPException - トークンが無効な場合
     """
     return await auth_service.refresh_access_token(db, token_data.refresh_token)
+
+
+@router.post("/password-reset", response_model=ResetResponse)
+async def request_password_reset(
+    reset_request: PasswordResetRequest,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    パスワードリセット要求エンドポイント
+    :param reset_request: リセット要求情報（メールアドレス）
+    :param db: DBセッション
+    :return: 処理ステータスメッセージ
+    """
+    return await auth_service.request_password_reset(db, reset_request.email)
+
+
+@router.post("/password-reset/confirm", response_model=ResetResponse)
+async def confirm_password_reset(
+    reset_confirm: PasswordResetConfirm,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    パスワードリセット確認エンドポイント
+    :param reset_confirm: リセット確認情報（トークン、新パスワード）
+    :param db: DBセッション
+    :return: 処理ステータスメッセージ
+    :raises: HTTPException - トークンが無効な場合
+    """
+    return await auth_service.confirm_password_reset(db, reset_confirm.token, reset_confirm.new_password)

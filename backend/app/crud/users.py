@@ -39,3 +39,20 @@ async def create_user(db: AsyncSession, username: str, email: str, password_hash
     await db.commit()
     await db.refresh(user)
     return user
+
+
+async def update_user_password(db: AsyncSession, user_id: int, new_password_hash: str):
+    """
+    ユーザーのパスワードを更新
+    :param db: DBセッション
+    :param user_id: ユーザーID
+    :param new_password_hash: 新しいハッシュ化済みパスワード
+    :return: 更新されたユーザー
+    """
+    result = await db.execute(select(User).where(User.id == user_id))
+    user = result.scalars().first()
+    if user:
+        user.password_hash = new_password_hash
+        await db.commit()
+        await db.refresh(user)
+    return user

@@ -8,8 +8,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException, status
 from app.core.auth import (verify_password, get_password_hash, create_access_token, 
                           create_refresh_token, decode_jwt_token, ACCESS_TOKEN_EXPIRE_MINUTES)
-from app.crud.users import get_user_by_username, get_user_by_email, create_user
+from app.crud.users import get_user_by_username, get_user_by_email, create_user, update_user_password
 from app.db.models.user import User
+import secrets
+import logging
+
+# ロガーの設定
+logger = logging.getLogger(__name__)
+
+# パスワードリセットトークン保存用の一時ディクショナリ
+# 注: 実運用環境では Redis などを使用すべき
+password_reset_tokens = {}
 
 async def authenticate_user(db: AsyncSession, username: str, password: str) -> Optional[User]:
     """
@@ -96,9 +105,63 @@ async def refresh_access_token(db: AsyncSession, refresh_token: str) -> Dict[str
         # 新しいトークンペアを作成
         return await create_auth_tokens(int(user_id))
         
-    except JWTError:
-        raise HTTPException(
+    except JWTError:        raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="無効なリフレッシュトークンです",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
+
+async def request_password_reset(db: AsyncSession, email: str) -> Dict[str, str]:
+    """
+    パスワードリセット要求を処理
+    :param db: DBセッション
+    :param email: ユーザーのメールアドレス
+    :return: メッセージを含む辞書
+    """
+    # メールアドレスからユーザーを検索
+    user = await get_user_by_email(db, email)
+    
+    # ユーザーが存在しない場合も成功を装う（セキュリティのため）
+    if not user:
+        logger.info(f"Password reset requested for non-existent email: {email}")
+        return {"message": "パスワードリセットの手順をメールで送信しました（存在する場合）"}
+    
+    # ランダムなリセットトークンを生成
+    reset_token = secrets.token_urlsafe(32)
+    
+    # トークンをユーザーIDと紐付けて保存
+    # 本来はRedisなどに有効期限付きで保存するのが望ましい
+    password_reset_tokens[reset_token] = user.id
+    
+    # 実際の環境ではここでメール送信
+    logger.info(f"Password reset token generated for user {user.id}: {reset_token}")
+    
+    return {"message": "パスワードリセットの手順をメールで送信しました"}
+
+
+async def confirm_password_reset(db: AsyncSession, token: str, new_password: str) -> Dict[str, str]:
+    """
+    パスワードリセット確認を処理
+    :param db: DBセッション
+    :param token: リセットトークン
+    :param new_password: 新しいパスワード
+    :return: メッセージを含む辞書
+    :raises: HTTPException - トークンが無効な場合
+    """
+    # トークンの検証
+    user_id = password_reset_tokens.get(token)
+    if not user_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="無効または期限切れのトークンです"
+        )
+    
+    # パスワードの更新
+    hashed_password = get_password_hash(new_password)
+    await update_user_password(db, user_id, hashed_password)
+    
+    # 使用済みトークンを削除
+    del password_reset_tokens[token]
+    
+    return {"message": "パスワードが正常にリセットされました"}

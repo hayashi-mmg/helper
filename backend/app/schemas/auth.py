@@ -39,3 +39,19 @@ class TokenPayload(BaseModel):
 class RefreshToken(BaseModel):
     """リフレッシュトークンリクエスト"""
     refresh_token: str
+
+
+class PasswordResetRequest(BaseModel):
+    """パスワードリセット要求リクエスト"""
+    email: EmailStr
+
+
+class PasswordResetConfirm(BaseModel):
+    """パスワードリセット確認リクエスト"""
+    token: str
+    new_password: str = Field(..., min_length=8)
+
+
+class ResetResponse(BaseModel):
+    """パスワードリセット要求レスポンス"""
+    message: str
