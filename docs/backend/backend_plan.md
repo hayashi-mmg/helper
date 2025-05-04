@@ -108,13 +108,13 @@
 - [x] `/api/v1/recipe-requests/from-url` エンドポイント実装
 
 ### QRコード機能
-- [ ] QRコード生成ユーティリティ実装
-- [ ] QRコード画像保存機能実装
-- [ ] QRコード有効期限管理実装
-- [ ] `/api/v1/qrcodes` エンドポイント実装
-- [ ] `/api/v1/qrcodes/{qrcode_id}` エンドポイント実装
-- [ ] `/api/v1/qrcodes/{qrcode_id}/image` エンドポイント実装
-- [ ] `/api/v1/qrcodes/batch` 一括生成エンドポイント実装
+- [x] QRコード生成ユーティリティ実装
+- [x] QRコード画像保存機能実装
+- [x] QRコード有効期限管理実装
+- [x] `/api/v1/qrcodes` エンドポイント実装
+- [x] `/api/v1/qrcodes/{qrcode_id}` エンドポイント実装
+- [x] `/api/v1/qrcodes/{qrcode_id}/image` エンドポイント実装
+- [x] `/api/v1/qrcodes/batch` 一括生成エンドポイント実装
 
 ### フィードバック機能
 - [ ] `/api/v1/feedback` エンドポイント実装

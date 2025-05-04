@@ -40,8 +40,7 @@ class Settings(BaseSettings):
     
     # CORS設定
     backend_cors_origins: str = "[\"http://localhost:8080\"]"
-    
-    # メール設定
+      # メール設定
     smtp_host: str = "mailhog"
     smtp_port: int = 1025
     smtp_username: str = ""
@@ -49,6 +48,10 @@ class Settings(BaseSettings):
     smtp_sender: str = "test@example.com"
     smtp_use_tls: bool = False
     smtp_use_ssl: bool = False
+    
+    # ファイル保存設定
+    media_root: str = "/app/media"
+    base_url: str = "http://localhost:8000"
     
     # URL設定
     api_prefix: str = "/api/v1"
