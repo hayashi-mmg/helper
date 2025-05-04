@@ -52,16 +52,16 @@
 - [x] PerformanceLog（パフォーマンスログ）モデル実装
 
 ### CRUD操作の実装
-- [ ] ベースCRUDクラス実装
-- [ ] Userモデル用CRUD実装
-- [ ] Helperモデル用CRUD実装
-- [ ] UserHelperAssignmentモデル用CRUD実装
-- [ ] RecipeRequestモデル用CRUD実装
-- [ ] Taskモデル用CRUD実装
-- [ ] Tagモデル用CRUD実装
-- [ ] Feedbackモデル用CRUD実装
-- [ ] HelperResponseモデル用CRUD実装
-- [ ] QRCodeモデル用CRUD実装
+- [x] ベースCRUDクラス実装
+- [x] Userモデル用CRUD実装
+- [x] Helperモデル用CRUD実装
+- [x] UserHelperAssignmentモデル用CRUD実装
+- [x] RecipeRequestモデル用CRUD実装
+- [x] Taskモデル用CRUD実装
+- [x] Tagモデル用CRUD実装
+- [x] Feedbackモデル用CRUD実装
+- [x] HelperResponseモデル用CRUD実装
+- [x] QRCodeモデル用CRUD実装
 
 ### テスト環境の構築
 - [x] テスト用データベース設定
