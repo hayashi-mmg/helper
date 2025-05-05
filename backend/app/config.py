@@ -9,6 +9,7 @@ import logging
 from functools import lru_cache
 from typing import Any, Dict, List, Optional, Union
 
+from pydantic import field_validator, field_serializer
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 logger = logging.getLogger(__name__)
@@ -76,51 +77,79 @@ class Settings(BaseSettings):
     # レート制限設定
     rate_limit_enabled: bool = True
     rate_limit_requests: int = 100
-    rate_limit_timeframe_seconds: int = 60
-    
-    # モデル設定
+    rate_limit_timeframe_seconds: int = 60    # モデル設定
     model_config = SettingsConfigDict(
         env_file = f".env.{os.getenv('APP_ENV', 'development')}",
         case_sensitive = True,
-        extra = "forbid"
+        extra = "allow"  # 環境変数からの追加入力を許可
     )
     
     # バリデータ
     @field_validator("backend_cors_origins", mode="before")
     @classmethod
-    def validate_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
+    def validate_cors_origins(cls, v: Union[str, List[str]]) -> Union[str, List[str]]:
         """CORS設定の検証と変換"""
         if isinstance(v, str):
+            # 既にJSON文字列の形式ならそのまま返す
+            if v.startswith("[") and v.endswith("]"):
+                return v
             try:
-                return json.loads(v)
+                # JSON形式の文字列を解析して、結果を再度JSON文字列に変換
+                parsed = json.loads(v)
+                return json.dumps(parsed) if isinstance(parsed, list) else v
             except json.JSONDecodeError:
-                return [i.strip() for i in v.split(",")]
+                # カンマ区切りの文字列をリスト化して、JSON文字列に変換
+                items = [i.strip() for i in v.split(",")]
+                return json.dumps(items)
+        # リストの場合はJSON文字列に変換
+        elif isinstance(v, list):
+            return json.dumps(v)
         return v
     
     @field_validator("supported_languages", mode="before")
     @classmethod
-    def validate_supported_languages(cls, v: Union[str, List[str]]) -> List[str]:
+    def validate_supported_languages(cls, v: Union[str, List[str]]) -> Union[str, List[str]]:
         """サポート言語リストの検証と変換"""
         if isinstance(v, str):
+            # 既にJSON文字列の形式ならそのまま返す
+            if v.startswith("[") and v.endswith("]"):
+                return v
             try:
-                return json.loads(v)
+                # JSON形式の文字列を解析して、結果を再度JSON文字列に変換
+                parsed = json.loads(v)
+                return json.dumps(parsed) if isinstance(parsed, list) else v
             except json.JSONDecodeError:
-                return [i.strip() for i in v.split(",")]
-        return v
-    
-    # シリアライザ
+                # カンマ区切りの文字列をリスト化して、JSON文字列に変換
+                items = [i.strip() for i in v.split(",")]
+                return json.dumps(items)
+        # リストの場合はJSON文字列に変換
+        elif isinstance(v, list):
+            return json.dumps(v)
+        return v    # シリアライザ
     @field_serializer("backend_cors_origins", "supported_languages")
-    def serialize_list_as_json(self, v: List[str]) -> str:
+    def serialize_list_as_json(self, v: Union[str, List[str]]) -> str:
         """リスト型の項目をJSON文字列に変換"""
-        return json.dumps(v)
+        if isinstance(v, list):
+            return json.dumps(v)
+        return v
     
     def get_cors_origins(self) -> List[str]:
         """CORS設定を取得"""
-        return self.validate_cors_origins(self.backend_cors_origins)
+        if isinstance(self.backend_cors_origins, str):
+            try:
+                return json.loads(self.backend_cors_origins)
+            except json.JSONDecodeError:
+                return [i.strip() for i in self.backend_cors_origins.split(",")]
+        return self.backend_cors_origins if isinstance(self.backend_cors_origins, list) else []
     
     def get_supported_languages(self) -> List[str]:
         """サポート言語リストを取得"""
-        return self.validate_supported_languages(self.supported_languages)
+        if isinstance(self.supported_languages, str):
+            try:
+                return json.loads(self.supported_languages)
+            except json.JSONDecodeError:
+                return [i.strip() for i in self.supported_languages.split(",")]
+        return self.supported_languages if isinstance(self.supported_languages, list) else []
     
     def is_production(self) -> bool:
         """本番環境かどうかを判定"""
