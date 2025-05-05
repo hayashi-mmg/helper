@@ -1,7 +1,7 @@
 """
 QRコードモデル定義
 """
-from sqlalchemy import Column, Integer, String, ForeignKey, TIMESTAMP
+from sqlalchemy import Column, Integer, String, ForeignKey, TIMESTAMP, Index
 from sqlalchemy.orm import relationship
 from app.db.base import Base, BaseModel
 import enum
@@ -27,10 +27,9 @@ class QRCode(Base, BaseModel):
     
     # リレーションシップ
     creator = relationship("User", backref="created_qr_codes")
-    
-    # インデックス用のテーブル引数
+      # インデックス用のテーブル引数
     __table_args__ = (
-        {"postgresql_using": "btree", "index": True, "columns": ["target_type", "target_id"]},
+        Index('ix_qr_codes_target_type_target_id', 'target_type', 'target_id', postgresql_using='btree'),
     )
     
     def __repr__(self) -> str:

@@ -1,7 +1,7 @@
 """
 ログ関連モデル定義
 """
-from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, JSON, ForeignKey, Enum
+from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, JSON, ForeignKey, Enum, Index
 from app.db.base import Base, BaseModel
 import enum
 from sqlalchemy.orm import relationship
@@ -61,10 +61,9 @@ class AuditLog(Base, BaseModel):
     
     # リレーションシップ
     user = relationship("User", backref="audit_logs")
-    
-    # インデックス用のテーブル引数
+      # インデックス用のテーブル引数
     __table_args__ = (
-        {"postgresql_using": "btree", "index": True, "columns": ["resource_type", "resource_id"]},
+        Index('ix_audit_logs_resource_type_resource_id', 'resource_type', 'resource_id', postgresql_using='btree'),
     )
     
     def __repr__(self) -> str:
