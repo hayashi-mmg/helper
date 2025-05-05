@@ -21,6 +21,7 @@ async def get_application_logs(
     level: Optional[str] = Query(None, description="ログレベル (INFO, WARNING, ERROR, CRITICAL)"),
     source: Optional[str] = Query(None, description="ログソース (API, UI, SYSTEM)"),
     user_id: Optional[int] = Query(None, description="ユーザーID"),
+    endpoint: Optional[str] = Query(None, description="エンドポイント"),
     start_time: Optional[datetime] = Query(None, description="開始日時"),
     end_time: Optional[datetime] = Query(None, description="終了日時"),
     limit: int = Query(100, ge=1, le=1000, description="取得する最大結果数"),
@@ -34,6 +35,7 @@ async def get_application_logs(
         level=level,
         source=source,
         user_id=user_id,
+        endpoint=endpoint,
         start_time=start_time,
         end_time=end_time,
         limit=limit,
@@ -110,48 +112,71 @@ async def get_slow_endpoints(
     log_manager = LogManager(db)
     return await log_manager.get_slow_endpoints(threshold_ms, limit)
 
-@router.post("/client", status_code=202)
-async def receive_client_logs(
-    background_tasks: BackgroundTasks,
-    logs_data: dict,
+@router.get("/stats", summary="ログ統計情報を取得")
+async def get_log_statistics(
+    days: int = Query(7, ge=1, le=30, description="統計期間（日数）"),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_admin_user)
 ):
-    """フロントエンドから送信されたログを受信して保存"""
-    # フロントエンドからのログ受信処理は専用のバックグラウンドタスクで処理
-    background_tasks.add_task(process_client_logs, logs_data, current_user.id, db)
-    return {"status": "accepted"}
+    """
+    ログの統計情報を取得（管理者専用）
 
-async def process_client_logs(logs_data: dict, user_id: int, db: AsyncSession):
-    """クライアントから送信されたログを処理"""
-    # アプリケーションログの処理
-    for log in logs_data.get("app", []):
-        await log_manager.add_application_log({
-            "level": log.get("level", "INFO"),
-            "source": "CLIENT",
-            "message": log.get("message", ""),
-            "user_id": user_id,
-            "endpoint": log.get("url"),
-            "additional_data": log
-        })
-    
-    # ユーザーアクションログの処理
-    for log in logs_data.get("user_action", []):
-        await log_manager.add_audit_log({
-            "user_id": user_id,
-            "action": log.get("action", ""),
-            "resource_type": log.get("resource_type", ""),
-            "resource_id": log.get("resource_id"),
-            "additional_data": log
-        })
-    
-    # パフォーマンスログの処理
-    for log in logs_data.get("performance", []):
-        await log_manager.add_performance_log({
-            "endpoint": log.get("url", ""),
-            "request_method": log.get("method", "GET"),
-            "response_time": log.get("duration", 0),
-            "status_code": log.get("status_code", 200),
-            "user_id": user_id,
-            "additional_metrics": log
-        })
+    - エラーレベル別のログ件数
+    - 期間別のログ発生トレンド
+    - 最も多いエラー発生エンドポイント
+    """
+    log_manager = LogManager(db)
+    return await log_manager.get_statistics(days=days)
+
+@router.get("/performance/analysis", summary="パフォーマンスログの分析結果を取得")
+async def analyze_performance_logs(
+    days: int = Query(7, ge=1, le=30, description="分析期間（日数）"),
+    min_requests: int = Query(10, ge=1, description="分析対象とする最小リクエスト数"),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_admin_user)
+):
+    """
+    パフォーマンスログの分析結果を取得（管理者専用）
+
+    - エンドポイント別の平均/最大/最小レスポンス時間
+    - 異常に遅いエンドポイントの検出
+    - リクエスト頻度の高いエンドポイント
+    """
+    log_manager = LogManager(db)
+    return await log_manager.analyze_performance(days=days, min_requests=min_requests)
+
+@router.post("/client", summary="クライアントからのログを受け取る")
+async def record_client_log(
+    log_data: dict,
+    background_tasks: BackgroundTasks,
+    db: AsyncSession = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user)
+):
+    """
+    クライアントサイドのログを受け取って保存する
+
+    フロントエンドからのエラーや警告を記録するためのエンドポイント
+    """
+    user_id = current_user.id if current_user else None
+
+    log_manager = LogManager(db)
+    # バックグラウンドタスクとして実行して応答を遅延させない
+    background_tasks.add_task(
+        log_manager.record_client_log,
+        level=log_data.get("level", "INFO"),
+        message=log_data.get("message", ""),
+        source="CLIENT",
+        user_id=user_id,
+        endpoint=log_data.get("url", ""),
+        ip_address=log_data.get("ip", ""),
+        user_agent=log_data.get("userAgent", ""),
+        additional_data={
+            "error_type": log_data.get("errorType", ""),
+            "stack": log_data.get("stack", ""),
+            "component": log_data.get("component", ""),
+            "browser": log_data.get("browser", ""),
+            "os": log_data.get("os", "")
+        }
+    )
+
+    return {"status": "success", "message": "ログが記録されました"}

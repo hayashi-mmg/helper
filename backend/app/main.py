@@ -1,6 +1,7 @@
 """
 FastAPIエントリーポイント。
 """
+import json
 import logging
 import os
 from pathlib import Path
@@ -24,14 +25,33 @@ logging.basicConfig(
 app = FastAPI(title="Helper System API")
 
 # CORS設定
-origins = ["http://localhost:3000", "http://localhost:8080"]
+try:
+    # 設定からCORSオリジンを取得
+    origins = json.loads(settings.backend_cors_origins)
+except (json.JSONDecodeError, AttributeError):
+    # 設定読み込みに失敗した場合はデフォルト値を使用
+    origins = ["http://localhost:3000", "http://localhost:8080"]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_headers=["Authorization", "Content-Type", "X-API-Key", "Accept-Language"],
+    expose_headers=["Content-Disposition"],
+    max_age=600,  # プリフライトリクエストのキャッシュ時間（秒）
 )
+
+# レート制限ミドルウェア追加（設定で有効な場合）
+if settings.rate_limit_enabled:
+    from app.core.rate_limiter import RateLimiter
+    from app.core.cache import redis_client
+    app.add_middleware(
+        RateLimiter,
+        redis_client=redis_client,
+        limit=settings.rate_limit_requests,
+        timeframe=settings.rate_limit_timeframe_seconds
+    )
 
 # ロギングミドルウェア追加
 app.add_middleware(LoggingMiddleware)
