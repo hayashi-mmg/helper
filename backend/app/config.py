@@ -35,6 +35,7 @@ class Settings(BaseSettings):
     
     # セキュリティ設定
     secret_key: str = "devsecretkey"
+    ALGORITHM: str = "HS256"  
     access_token_expire_minutes: int = 30
     refresh_token_expire_days: int = 7
     password_reset_token_expire_hours: int = 24
