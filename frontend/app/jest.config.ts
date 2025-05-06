@@ -1,5 +1,4 @@
 import type { Config } from 'jest';
-import { pathsToModuleNameMapper } from 'ts-jest';
 
 const config: Config = {
     preset: 'ts-jest',
@@ -7,7 +6,6 @@ const config: Config = {
     transform: {
         '^.+\\.(ts|tsx)$': ['ts-jest', {
             tsconfig: 'tsconfig.app.json',
-            // ESM構文をCommonJSでも使用できるようにする
             useESM: true,
             isolatedModules: true,
         }],
@@ -33,7 +31,10 @@ const config: Config = {
         '\\.(css|less|scss|sass)$': '<rootDir>/src/test-utils/styleMock.js'
     },
     setupFilesAfterEnv: ['<rootDir>/src/test-utils/setupTests.ts'],
-    collectCoverage: true,
+    setupFiles: ['./.jest.env.js'],
+    
+    // カバレッジ設定（デフォルトでは無効）
+    collectCoverage: false,
     collectCoverageFrom: [
         'src/**/*.{ts,tsx}',
         '!src/**/*.d.ts',
@@ -54,27 +55,28 @@ const config: Config = {
         '**/__tests__/**/*.test.[jt]s?(x)',
         '**/?(*.)+(spec|test).[jt]s?(x)'
     ],
-    // モジュール形式を明示的に指定
+    
+    // パフォーマンス向上設定
+    maxWorkers: '50%',
+    cache: true,
+    cacheDirectory: '<rootDir>/node_modules/.cache/jest',
+    
+    // 変換が不要なパスを無視
+    transformIgnorePatterns: [
+        '/node_modules/(?!(@chakra-ui|nanoid)/)'
+    ],
+    
+    // モジュール形式の設定
     extensionsToTreatAsEsm: ['.ts', '.tsx'],
-    // import.meta用の環境変数モック
+    
+    // エラー処理の改善
+    bail: 1,  // 最初のテスト失敗で終了
+    verbose: false,  // 出力を減らして実行を高速化
+    
+    // import.meta.env のモック（.jest.env.jsに移動）
     globals: {
         'ts-jest': {
             useESM: true,
-        },
-        // Vite環境変数のモック
-        'import.meta': {
-            env: {
-                VITE_TEST_STRING: 'test',
-                VITE_TEST_NUMBER: '123',
-                VITE_TEST_BOOLEAN_TRUE: 'true',
-                VITE_TEST_BOOLEAN_FALSE: 'false',
-                VITE_ENABLE_DEBUG: 'true',
-                VITE_ENABLE_MOCK: 'true',
-                DEV: true,
-                PROD: false,
-                MODE: 'test',
-                SSR: false
-            },
         },
     },
 };
