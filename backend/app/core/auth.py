@@ -68,3 +68,40 @@ def decode_jwt_token(token: str) -> Dict[str, Any]:
     :raises: JWTError
     """
     return jwt.decode(token, settings.secret_key, algorithms=[ALGORITHM])
+
+async def get_current_user(token: str, db: "AsyncSession") -> "User":
+    """
+    現在のユーザーを取得
+    :param token: JWTトークン
+    :param db: データベースセッション
+    :return: ユーザーモデル
+    """
+    from app.crud.users import get_user_by_id
+    from app.exceptions import CredentialsException
+    
+    try:
+        payload = decode_jwt_token(token)
+        user_id: int = payload.get("sub")
+        if user_id is None:
+            raise CredentialsException()
+    except JWTError:
+        raise CredentialsException()
+        
+    user = await get_user_by_id(db, user_id)
+    if user is None:
+        raise CredentialsException()
+    return user
+    
+async def get_current_active_user(token: str, db: "AsyncSession") -> "User":
+    """
+    現在のアクティブユーザーを取得
+    :param token: JWTトークン
+    :param db: データベースセッション
+    :return: アクティブなユーザーモデル
+    """
+    from app.exceptions import InactiveUserException
+    
+    current_user = await get_current_user(token, db)
+    if not current_user.is_active:
+        raise InactiveUserException()
+    return current_user

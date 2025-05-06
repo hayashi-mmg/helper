@@ -21,11 +21,14 @@ class HelperResponseUpdate(BaseModel):
     response_text: Optional[str] = None
     cooking_notes: Optional[str] = None
 
-class HelperResponseResponse(HelperResponseBase):
+class HelperResponseRead(HelperResponseBase):
     """ヘルパー返信レスポンススキーマ"""
     id: int
     created_at: datetime
-    updated_at: datetime
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
+        
+# 後方互換性のためにエイリアスを作成
+HelperResponseResponse = HelperResponseRead
