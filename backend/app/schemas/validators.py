@@ -293,3 +293,50 @@ def validate_amount(amount: Optional[int]) -> Optional[int]:
         raise ValueError("金額が上限を超えています")
     
     return amount
+
+# コメントのバリデーション
+def validate_comments(comments: Optional[str]) -> Optional[str]:
+    """
+    コメントの妥当性を検証
+    
+    Args:
+        comments: 検証するコメント
+        
+    Returns:
+        検証済みのコメント
+        
+    Raises:
+        ValueError: 無効なコメントの場合
+    """
+    if comments is None:
+        return None
+        
+    if len(comments) > 1000:
+        raise ValueError("コメントは1000文字以内にしてください")
+    
+    return comments
+
+# タスク説明のバリデーション
+def validate_task_description(description: str) -> str:
+    """
+    タスク説明の妥当性を検証
+    
+    Args:
+        description: 検証するタスク説明
+        
+    Returns:
+        検証済みのタスク説明
+        
+    Raises:
+        ValueError: 無効なタスク説明の場合
+    """
+    if not description or not isinstance(description, str):
+        raise ValueError("タスク説明は必須です")
+        
+    if len(description) < 3:
+        raise ValueError("タスク説明は3文字以上で入力してください")
+        
+    if len(description) > 500:
+        raise ValueError("タスク説明は500文字以内にしてください")
+    
+    return description
