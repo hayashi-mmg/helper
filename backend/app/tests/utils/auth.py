@@ -6,7 +6,11 @@ from datetime import datetime, timedelta
 
 from jose import jwt
 
-from app.core.auth import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM
+from app.core.auth import ACCESS_TOKEN_EXPIRE_MINUTES
+from app.config import settings
+
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
 from app.db.models.user import User
 
 
