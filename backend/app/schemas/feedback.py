@@ -2,7 +2,7 @@
 フィードバックのスキーマ定義
 """
 from typing import Optional, Dict, Any
-from pydantic import BaseModel, Field, validator, root_validator
+from pydantic import BaseModel, Field, validator, model_validator
 from datetime import datetime
 from app.schemas.validators import validate_url, validate_comments
 
@@ -24,17 +24,17 @@ class FeedbackBase(BaseModel):
     # 写真URLのバリデーション
     _validate_url = validator('photo_url', allow_reuse=True, pre=True)(validate_url)
     
-    @root_validator
-    def calculate_overall_rating(cls, values):
+    @model_validator(mode='after')
+    def calculate_overall_rating(self):
         """
         全体的な評価が指定されていない場合、他の評価の平均値を計算
         """
-        if 'overall_rating' not in values or values['overall_rating'] is None:
-            ratings = [values.get('taste_rating'), values.get('texture_rating'), values.get('quantity_rating')]
+        if not self.overall_rating:
+            ratings = [self.taste_rating, self.texture_rating, self.quantity_rating]
             ratings = [r for r in ratings if r is not None]
             if ratings:
-                values['overall_rating'] = round(sum(ratings) / len(ratings))
-        return values
+                self.overall_rating = round(sum(ratings) / len(ratings))
+        return self
         
     @validator('request_for_next')
     def validate_request_length(cls, v):
