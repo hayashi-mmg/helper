@@ -56,8 +56,10 @@ export function getCsrfToken(): string {
  * @returns 安全なクラス名
  */
 export function sanitizeClassName(className: string): string {
+    // HTMLタグを完全に削除
+    const withoutTags = className.replace(/<[^>]*>/g, '');
     // アルファベット、数字、ハイフン、アンダースコアのみを許可
-    return className.replace(/[^a-zA-Z0-9-_]/g, '');
+    return withoutTags.replace(/[^a-zA-Z0-9-_]/g, '');
 }
 
 /**
