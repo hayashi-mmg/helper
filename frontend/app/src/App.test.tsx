@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
+import { AllProviders } from './test-utils/providers';
 
 // import.meta.envをモック
 jest.mock('./utils/env', () => ({
@@ -31,19 +32,24 @@ describe('App', () => {
   });
 
   it('アプリケーションが正しくレンダリングされる', () => {
-    render(<App />);
+    render(
+      <AllProviders>
+        <App />
+      </AllProviders>
+    );
     
     // アプリ名が表示されていることを確認
     expect(screen.getByText('テストアプリ')).toBeInTheDocument();
     
-    // 初期化完了メッセージが表示されていることを確認
-    expect(screen.getByText('プロジェクト初期化完了')).toBeInTheDocument();
+    // UIライブラリ導入完了メッセージが表示されていることを確認
+    expect(screen.getByText('UIライブラリ導入完了')).toBeInTheDocument();
     
     // 完了項目が表示されていることを確認
-    expect(screen.getByText('プロジェクト構造の最適化')).toBeInTheDocument();
-    expect(screen.getByText('セキュリティ設定の強化')).toBeInTheDocument();
-    expect(screen.getByText('環境変数の設定')).toBeInTheDocument();
-    expect(screen.getByText('テスト環境の構築')).toBeInTheDocument();
+    expect(screen.getByText('Chakra UIのインストールと基本設定')).toBeInTheDocument();
+    expect(screen.getByText('カスタムテーマの作成')).toBeInTheDocument();
+    expect(screen.getByText('グローバルスタイルの適用')).toBeInTheDocument();
+    expect(screen.getByText('基本コンポーネントの実装')).toBeInTheDocument();
+    expect(screen.getByText('テストコードの作成')).toBeInTheDocument();
     
     // フッターが表示されていることを確認
     const currentYear = new Date().getFullYear();
@@ -51,7 +57,11 @@ describe('App', () => {
   });
 
   it('CSRFトークンのmetaタグが追加される', () => {
-    render(<App />);
+    render(
+      <AllProviders>
+        <App />
+      </AllProviders>
+    );
     
     // CSRFトークンのmetaタグが追加されていることを確認
     const metaTag = document.querySelector('meta[name="csrf-token"]');

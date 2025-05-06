@@ -1,57 +1,57 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '../../../test-utils/providers';
 import Button from './Button';
-import { render } from '../../../test-utils/providers';
 
 describe('Button', () => {
-    // レンダリングテスト
+    // 基本的なレンダリングテスト
     it('renders correctly with default props', () => {
-        render(<Button>Click me</Button>);
-        expect(screen.getByRole('button')).toHaveTextContent('Click me');
+        render(<Button>テストボタン</Button>);
+        expect(screen.getByText('テストボタン')).toBeInTheDocument();
     });
-
-    // インタラクションテスト
+    
+    // クリックイベントのテスト
     it('calls onClick handler when clicked', () => {
         const handleClick = jest.fn();
-        render(<Button onClick={handleClick}>Click me</Button>);
+        render(<Button onClick={handleClick}>クリックテスト</Button>);
         
-        fireEvent.click(screen.getByRole('button'));
+        fireEvent.click(screen.getByText('クリックテスト'));
         expect(handleClick).toHaveBeenCalledTimes(1);
     });
-
-    // バリアント（スタイルバージョン）のテスト
+    
+    // バリアントスタイルのテスト
     it('applies variant styles correctly', () => {
-        const { rerender } = render(<Button variant="outline">Outline Button</Button>);
-        expect(screen.getByRole('button')).toBeInTheDocument();
+        const { rerender } = render(<Button>デフォルトボタン</Button>);
+        expect(screen.getByRole('button')).toHaveAttribute('variant', 'solid');
         
-        rerender(<Button variant="solid">Solid Button</Button>);
-        expect(screen.getByRole('button')).toBeInTheDocument();
+        rerender(<Button variant="outline">アウトラインボタン</Button>);
+        expect(screen.getByRole('button')).toHaveAttribute('variant', 'outline');
         
-        rerender(<Button variant="ghost">Ghost Button</Button>);
-        expect(screen.getByRole('button')).toBeInTheDocument();
+        rerender(<Button variant="ghost">ゴーストボタン</Button>);
+        expect(screen.getByRole('button')).toHaveAttribute('variant', 'ghost');
         
-        rerender(<Button variant="link">Link Button</Button>);
-        expect(screen.getByRole('button')).toBeInTheDocument();
+        rerender(<Button variant="link">リンクボタン</Button>);
+        expect(screen.getByRole('button')).toHaveAttribute('variant', 'link');
     });
-
+    
     // サイズのテスト
     it('renders in different sizes correctly', () => {
-        const { rerender } = render(<Button size="xs">Extra Small</Button>);
-        expect(screen.getByRole('button')).toBeInTheDocument();
+        // sizeプロパティをdata属性としてテスト
+        const { rerender } = render(<Button size="xs">極小ボタン</Button>);
+        expect(screen.getByRole('button')).toHaveAttribute('data-size', 'xs');
         
-        rerender(<Button size="sm">Small</Button>);
-        expect(screen.getByRole('button')).toBeInTheDocument();
+        rerender(<Button size="sm">小ボタン</Button>);
+        expect(screen.getByRole('button')).toHaveAttribute('data-size', 'sm');
         
-        rerender(<Button size="md">Medium</Button>);
-        expect(screen.getByRole('button')).toBeInTheDocument();
+        rerender(<Button size="md">中ボタン</Button>);
+        expect(screen.getByRole('button')).toHaveAttribute('data-size', 'md');
         
-        rerender(<Button size="lg">Large</Button>);
-        expect(screen.getByRole('button')).toBeInTheDocument();
+        rerender(<Button size="lg">大ボタン</Button>);
+        expect(screen.getByRole('button')).toHaveAttribute('data-size', 'lg');
     });
-
-    // 無効状態のテスト
+    
+    // 無効化状態のテスト
     it('is disabled when isDisabled prop is true', () => {
         render(<Button isDisabled>Disabled Button</Button>);
-        expect(screen.getByRole('button')).toBeDisabled();
+        expect(screen.getByRole('button')).toHaveAttribute('disabled');
     });
     
     // ローディング状態のテスト
@@ -64,7 +64,7 @@ describe('Button', () => {
     it('applies custom color scheme when provided', () => {
         render(<Button colorScheme="blue">Blue Button</Button>);
         const button = screen.getByRole('button');
-        expect(button).toHaveAttribute('data-group');
+        expect(button).toHaveAttribute('colorscheme', 'blue');
         expect(button).toBeInTheDocument();
     });
 });
