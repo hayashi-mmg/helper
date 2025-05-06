@@ -12,6 +12,7 @@ from app.crud.users import get_user_by_username, get_user_by_email, create_user,
 from app.db.models.user import User
 import secrets
 import logging
+from fastapi import Depends
 
 # ロガーの設定
 logger = logging.getLogger(__name__)
@@ -165,3 +166,49 @@ async def confirm_password_reset(db: AsyncSession, token: str, new_password: str
     del password_reset_tokens[token]
     
     return {"message": "パスワードが正常にリセットされました"}
+
+
+async def get_current_user(token: str, db: AsyncSession) -> User:
+    """
+    現在のユーザーを取得
+    :param token: JWTトークン
+    :param db: DBセッション
+    :return: ユーザーオブジェクト
+    :raises: HTTPException - 認証失敗時
+    """
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="無効な認証情報",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    
+    try:
+        payload = decode_jwt_token(token)
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+    
+    user = await get_user_by_username(db, username)
+    if user is None:
+        raise credentials_exception
+    
+    if not user.is_active:
+        raise HTTPException(status_code=400, detail="無効なユーザー")
+    
+    return user
+
+async def get_current_admin_user(current_user: User = Depends(get_current_user)) -> User:
+    """
+    管理者ユーザーを取得
+    :param current_user: 現在のユーザー
+    :return: 管理者権限を持つユーザー
+    :raises: HTTPException - 管理者権限がない場合
+    """
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="管理者権限が必要です"
+        )
+    return current_user
