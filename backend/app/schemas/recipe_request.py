@@ -40,7 +40,7 @@ class RecipeRequestCreate(RecipeRequestBase):
     # タグのバリデーション
     _validate_tags = validator('tags', allow_reuse=True)(validate_tags)
     
-    @root_validator
+    @root_validator(skip_on_failure=True)
     def validate_recipe_info(cls, values):
         """
         レシピURLまたはレシピ内容のいずれかが必要
