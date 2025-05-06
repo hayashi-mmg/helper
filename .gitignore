@@ -88,3 +88,17 @@ frontend/coverage/
 .env.development.local
 .env.test.local
 .env.production.local
+backend/app/db/models/__pycache__/user.cpython-39.pyc
+backend/app/logs/__pycache__/__init__.cpython-39.pyc
+backend/app/logs/__pycache__/app_logger.cpython-39.pyc
+backend/app/logs/__pycache__/middleware.cpython-39.pyc
+backend/app/logs/__pycache__/performance_logger.cpython-39.pyc
+backend/tests/__pycache__/__init__.cpython-311.pyc
+backend/tests/__pycache__/conftest.cpython-39-pytest-8.3.5.pyc
+backend/tests/__pycache__/conftest.cpython-311-pytest-7.4.0.pyc
+backend/tests/api/__pycache__/__init__.cpython-311.pyc
+backend/tests/api/__pycache__/test_auth_login.cpython-39-pytest-8.3.5.pyc
+backend/tests/api/__pycache__/test_auth_refresh.cpython-39-pytest-8.3.5.pyc
+backend/tests/api/__pycache__/test_auth_register.cpython-311-pytest-7.4.0.pyc
+backend/tests/core/__pycache__/test_auth.cpython-39-pytest-8.3.5.pyc
+backend/tests/core/__pycache__/test_auth.cpython-311-pytest-7.4.0.pyc
