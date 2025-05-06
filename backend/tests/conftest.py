@@ -1,7 +1,8 @@
 import pytest
 import os
 import subprocess
-
+from pydantic_settings import BaseSettings
+from pydantic import field_serializer
 # テスト用DBのURL（本番と分離）
 TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "postgresql+asyncpg://postgres:postgres@db:5432/test_markdown_cms")
 
