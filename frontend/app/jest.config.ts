@@ -1,4 +1,5 @@
 import type { Config } from 'jest';
+import { pathsToModuleNameMapper } from 'ts-jest';
 
 const config: Config = {
     preset: 'ts-jest',
@@ -6,9 +7,15 @@ const config: Config = {
     transform: {
         '^.+\\.(ts|tsx)$': ['ts-jest', {
             tsconfig: 'tsconfig.app.json',
+            // ESM構文をCommonJSでも使用できるようにする
+            useESM: true,
+            isolatedModules: true,
         }],
     },
     moduleNameMapper: {
+        // 外部ライブラリのモック
+        '^@chakra-ui/react$': '<rootDir>/src/test-utils/mocks/chakra.tsx',
+        '^@chakra-ui/theme-tools$': '<rootDir>/src/test-utils/mocks/chakra-theme-tools.tsx',
         // パスエイリアスの設定
         '^@/(.*)$': '<rootDir>/src/$1',
         '^@components/(.*)$': '<rootDir>/src/components/$1',
@@ -47,6 +54,29 @@ const config: Config = {
         '**/__tests__/**/*.test.[jt]s?(x)',
         '**/?(*.)+(spec|test).[jt]s?(x)'
     ],
+    // モジュール形式を明示的に指定
+    extensionsToTreatAsEsm: ['.ts', '.tsx'],
+    // import.meta用の環境変数モック
+    globals: {
+        'ts-jest': {
+            useESM: true,
+        },
+        // Vite環境変数のモック
+        'import.meta': {
+            env: {
+                VITE_TEST_STRING: 'test',
+                VITE_TEST_NUMBER: '123',
+                VITE_TEST_BOOLEAN_TRUE: 'true',
+                VITE_TEST_BOOLEAN_FALSE: 'false',
+                VITE_ENABLE_DEBUG: 'true',
+                VITE_ENABLE_MOCK: 'true',
+                DEV: true,
+                PROD: false,
+                MODE: 'test',
+                SSR: false
+            },
+        },
+    },
 };
 
 export default config;
