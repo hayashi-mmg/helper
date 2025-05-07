@@ -108,3 +108,4 @@ backend/app/db/models/__pycache__/user.cpython-39.pyc
 backend/app/logs/__pycache__/app_logger.cpython-39.pyc
 backend/app/logs/__pycache__/middleware.cpython-39.pyc
 backend/app/logs/__pycache__/performance_logger.cpython-39.pyc
+test.txt
