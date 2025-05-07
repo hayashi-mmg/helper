@@ -26,6 +26,13 @@ afterAll(() => {
     console.log('テスト終了');
 });
 
+// TextEncoderとTextDecoderの定義（react-router-domなどで必要）
+if (typeof global.TextEncoder === 'undefined') {
+    const { TextEncoder, TextDecoder } = require('util');
+    global.TextEncoder = TextEncoder;
+    global.TextDecoder = TextDecoder;
+}
+
 // グローバルなモック
 Object.defineProperty(window, 'matchMedia', {
     writable: true,
