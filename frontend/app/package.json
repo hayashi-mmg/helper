@@ -1,36 +1,12 @@
 {
-  "name": "frontend2",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "test": "jest",
-    "test:fast": "jest --no-coverage --maxWorkers=50%",
-    "test:watch": "jest --watch --no-coverage",
-    "test:changed": "jest --onlyChanged --no-coverage",
-    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --no-cache",
-    "test:file": "jest --no-coverage",
-    "test:json": "jest --json",
-    "test:coverage": "jest --coverage",
-    "test:coverage:watch": "jest --coverage --watch",
-    "test:coverage:report": "jest --coverage --reporters=default --reporters=jest-junit --reporters=html --coverageReporters=text-summary,html,junit",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "storybook": "storybook dev -p 6006 --config-dir .storybook",
-    "build-storybook": "storybook build"
-  },
   "dependencies": {
+    "@chakra-ui/react": "^3.17.0",
+    "@chakra-ui/theme-tools": "^2.2.6",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^5.0.1",
-    "@mui/icons-material": "^7.0.2",
-    "@mui/material": "^7.0.2",
     "@tanstack/react-query": "^5.71.10",
     "@types/styled-components": "^5.1.34",
     "axios": "^1.9.0",
@@ -100,18 +76,5 @@
     "vite": "^6.2.0",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.0.9"
-  },
-  "msw": {
-    "workerDirectory": [
-      "public"
-    ]
-  },
-  "eslintConfig": {
-    "extends": [
-      "plugin:storybook/recommended",
-      "plugin:react/recommended",
-      "plugin:react-hooks/recommended",
-      "plugin:@typescript-eslint/recommended"
-    ]
   }
 }
