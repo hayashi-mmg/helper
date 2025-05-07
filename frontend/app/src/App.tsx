@@ -3,6 +3,7 @@ import './App.css';
 import { setupCspViolationReporting } from './utils/security';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './routes';
+import { QueryProvider } from './providers/QueryProvider';
 
 /**
  * アプリケーションのルートコンポーネント
@@ -28,7 +29,9 @@ function App() {
     }, []);
 
     return (
-        <RouterProvider router={router} />
+        <QueryProvider>
+            <RouterProvider router={router} />
+        </QueryProvider>
     );
 }
 
