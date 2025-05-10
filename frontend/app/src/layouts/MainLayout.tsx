@@ -1,4 +1,5 @@
-import { Box, Container, Flex, useColorMode, IconButton, Link as ChakraLink } from '@chakra-ui/react';
+import { Box, Container, Flex, IconButton, Link as ChakraLink } from '@chakra-ui/react';
+import { useColorMode } from '@chakra-ui/color-mode';
 import { Link as RouterLink } from 'react-router-dom';
 import { ReactNode } from 'react';
 
