@@ -1,4 +1,4 @@
-import { mode } from '@chakra-ui/theme-tools';
+import { mode } from '@chakra-ui/theme';
 import { type Dict, type StyleFunctionProps } from '@chakra-ui/react';
 
 /**
