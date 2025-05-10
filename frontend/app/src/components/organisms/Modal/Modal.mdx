@@ -1,0 +1,74 @@
+# モーダル/ダイアログコンポーネント
+
+モーダル/ダイアログコンポーネントは、ユーザー操作の確認や入力フォームを表示するための再利用可能なUIコンポーネントです。
+
+## 使用例
+
+```tsx
+import { Modal, useModal } from '@components/organisms/Modal';
+import { Button, Text } from '@chakra-ui/react';
+
+const MyComponent = () => {
+    // モーダルの開閉状態を管理するフック
+    const { isOpen, openModal, closeModal } = useModal();
+    
+    return (
+        <>
+            <Button onClick={openModal}>モーダルを開く</Button>
+            <Modal 
+                isOpen={isOpen} 
+                onClose={closeModal}
+                title="確認"
+            >
+                <Text>モーダルの内容をここに配置します。</Text>
+            </Modal>
+        </>
+    );
+};
+```
+
+## Props
+
+| プロパティ名 | 型 | デフォルト値 | 説明 |
+|-------------|-----|-------------|------|
+| title | string | - | モーダルのタイトル |
+| children | ReactNode | - | モーダルの内容 |
+| footer | ReactNode | - | モーダルのフッターコンテンツ |
+| isOpen | boolean | - | モーダルが開いているかどうか |
+| onClose | () => void | - | モーダルを閉じる関数 |
+| size | 'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl' \| 'full' | 'md' | モーダルのサイズ |
+| closeOnOverlayClick | boolean | true | 背景クリックでモーダルを閉じるかどうか |
+| closeOnEsc | boolean | true | ESCキーでモーダルを閉じるかどうか |
+| hideHeader | boolean | false | モーダルのヘッダーを非表示にするかどうか |
+| hideCloseButton | boolean | false | モーダルの閉じるボタンを非表示にするかどうか |
+| overlayOpacity | number | 0.4 | モーダルの背景の不透明度 |
+| onBeforeOpen | () => void | - | モーダルを開く前に実行するコールバック |
+| onBeforeClose | () => void | - | モーダルを閉じる前に実行するコールバック |
+| onAfterOpen | () => void | - | モーダルが開いた後に実行するコールバック |
+| onAfterClose | () => void | - | モーダルが閉じた後に実行するコールバック |
+| zIndex | number | - | モーダルのz-index |
+| className | string | - | カスタムクラス名 |
+| style | React.CSSProperties | - | カスタムスタイル |
+| initialFocusRef | React.RefObject<HTMLElement> | - | モーダルの初期フォーカス要素 |
+| finalFocusRef | React.RefObject<HTMLElement> | - | モーダル閉じた後にフォーカスする要素 |
+
+## useModal Hook
+
+`useModal`フックを使用すると、モーダルの開閉状態を簡単に管理できます。
+
+```tsx
+const { isOpen, openModal, closeModal, toggleModal } = useModal(initialState);
+```
+
+| 戻り値 | 型 | 説明 |
+|-------|-----|------|
+| isOpen | boolean | モーダルが開いているかどうか |
+| openModal | () => void | モーダルを開く関数 |
+| closeModal | () => void | モーダルを閉じる関数 |
+| toggleModal | () => void | モーダルの開閉状態を切り替える関数 |
+
+## アクセシビリティ
+
+- キーボード操作に対応（ESCキーでモーダルを閉じる）
+- スクリーンリーダー対応
+- フォーカス管理（モーダル開時に指定要素にフォーカス、閉時に元の要素に戻る）
