@@ -1,0 +1,114 @@
+# カードコンポーネント
+
+カードコンポーネントは情報を整理して表示するための基本的なUI要素です。
+
+## 基本的なカードコンポーネント
+
+`Card` コンポーネントは、シンプルなコンテナとして機能し、子要素を表示します。
+
+```tsx
+import { Card } from './components/atoms/Card';
+import { Box, Text } from '@chakra-ui/react';
+
+// 基本的な使用例
+<Card>
+  <Box p={4}>
+    <Text>基本的なカードコンテンツ</Text>
+  </Box>
+</Card>
+
+// スタイルのカスタマイズ
+<Card shadowSize="lg" withBorder withHoverEffect bgColor="blue.50" p={4}>
+  <Text>スタイル付きカード</Text>
+</Card>
+```
+
+## カードレイアウトコンポーネント
+
+`CardLayout` コンポーネントは、ヘッダー、ボディ、フッターの構造を持つカードを提供します。
+
+```tsx
+import { CardLayout } from './components/atoms/CardLayout';
+import { Button, Text } from '@chakra-ui/react';
+
+// タイトルとコンテンツ
+<CardLayout title="カードタイトル">
+  <Text>カードコンテンツ</Text>
+</CardLayout>
+
+// ヘッダーアクション付き
+<CardLayout 
+  title="設定パネル" 
+  headerAction={<Button size="sm">編集</Button>}
+>
+  <Text>設定内容がここに表示されます</Text>
+</CardLayout>
+
+// フッター付き
+<CardLayout
+  title="情報カード"
+  footer={
+    <>
+      <Button variant="ghost" mr={2}>キャンセル</Button>
+      <Button colorScheme="blue">保存</Button>
+    </>
+  }
+>
+  <Text>カードのメインコンテンツ</Text>
+</CardLayout>
+
+// 完全なカスタマイズ例
+<CardLayout
+  title="分析レポート"
+  headerAction={<Button size="sm">詳細</Button>}
+  withBorder
+  shadowSize="md"
+  withHoverEffect
+  footer={<Text fontSize="sm">最終更新: 2025/05/08</Text>}
+>
+  <Text>月次レポートの概要が表示されます。</Text>
+</CardLayout>
+```
+
+## 個別のカード要素の使用
+
+ヘッダー、ボディ、フッターのコンポーネントを個別に使用することもできます。
+
+```tsx
+import { Card } from './components/atoms/Card';
+import { CardHeader, CardBody, CardFooter } from './components/atoms/CardLayout';
+import { Button, Text } from '@chakra-ui/react';
+
+<Card>
+  <CardHeader title="カスタムレイアウト" action={<Button size="sm">アクション</Button>} />
+  <CardBody>
+    <Text>カードの内容をカスタマイズできます</Text>
+  </CardBody>
+  <CardFooter>
+    <Button colorScheme="blue">確認</Button>
+  </CardFooter>
+</Card>
+```
+
+## Props
+
+### Card Props
+
+| プロパティ名 | 型 | デフォルト | 説明 |
+|-------------|------|---------|------|
+| shadowSize | 'none' \| 'sm' \| 'md' \| 'lg' \| 'xl' | 'md' | カードの影のサイズ |
+| bgColor | string | - | カードの背景色 |
+| withBorder | boolean | false | カードの枠線の表示有無 |
+| withHoverEffect | boolean | false | カードのホバーエフェクト有無 |
+| styleProps | StyleProps | - | カスタムスタイルのオーバーライド |
+| ...BoxProps | BoxProps | - | Chakra UI BoxコンポーネントのProps |
+
+### CardLayout Props
+
+| プロパティ名 | 型 | デフォルト | 説明 |
+|-------------|------|---------|------|
+| title | React.ReactNode | - | カードのヘッダーに表示するタイトル |
+| headerAction | React.ReactNode | - | カードのヘッダーに表示するアクション |
+| header | React.ReactNode | - | カスタムヘッダー部分 |
+| footer | React.ReactNode | - | カスタムフッター部分 |
+| ...CardProps | CardProps | - | 基本のCardコンポーネントのProps |
