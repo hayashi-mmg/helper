@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import './App.css';
 import { setupCspViolationReporting } from './utils/security';
-import { RouterProvider } from 'react-router-dom';
-import { router } from './routes';
+import { ChakraProvider } from './providers/ChakraProvider';
 import { QueryProvider } from './providers/QueryProvider';
+import { AuthProvider } from './features/auth/providers/AuthProvider';
+import { AppRouter } from './features/common/routes/AppRouter';
 
 /**
  * アプリケーションのルートコンポーネント
@@ -30,7 +31,11 @@ function App() {
 
     return (
         <QueryProvider>
-            <RouterProvider router={router} />
+            <ChakraProvider>
+                <AuthProvider>
+                    <AppRouter />
+                </AuthProvider>
+            </ChakraProvider>
         </QueryProvider>
     );
 }
