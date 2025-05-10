@@ -7,7 +7,7 @@ from app.database import get_db
 from app.services.auth_service import get_current_admin_user, get_current_user
 from app.logs.log_manager import LogManager
 from app.schemas.log import ApplicationLogResponse, AuditLogResponse, PerformanceLogResponse
-from app.schemas.user import User
+from app.schemas.user import UserBase
 from typing import List, Optional
 from datetime import datetime, timedelta
 
@@ -27,7 +27,7 @@ async def get_application_logs(
     limit: int = Query(100, ge=1, le=1000, description="取得する最大結果数"),
     offset: int = Query(0, ge=0, description="結果をスキップする数"),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_admin_user)
+    current_user: UserBase = Depends(get_current_admin_user)
 ):
     """アプリケーションログを取得する（管理者専用）"""
     log_manager = LogManager(db)
@@ -54,7 +54,7 @@ async def get_audit_logs(
     limit: int = Query(100, ge=1, le=1000, description="取得する最大結果数"),
     offset: int = Query(0, ge=0, description="結果をスキップする数"),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_admin_user)
+    current_user: UserBase = Depends(get_current_admin_user)
 ):
     """監査ログを取得する（管理者専用）"""
     log_manager = LogManager(db)
@@ -83,7 +83,7 @@ async def get_performance_logs(
     limit: int = Query(100, ge=1, le=1000, description="取得する最大結果数"),
     offset: int = Query(0, ge=0, description="結果をスキップする数"),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_admin_user)
+    current_user: UserBase = Depends(get_current_admin_user)
 ):
     """パフォーマンスログを取得する（管理者専用）"""
     log_manager = LogManager(db)
@@ -106,7 +106,7 @@ async def get_slow_endpoints(
     threshold_ms: int = Query(500, description="閾値（ミリ秒）"),
     limit: int = Query(10, ge=1, le=100, description="取得する最大結果数"),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_admin_user)
+    current_user: UserBase = Depends(get_current_admin_user)
 ):
     """遅いエンドポイントの統計を取得する（管理者専用）"""
     log_manager = LogManager(db)
@@ -116,7 +116,7 @@ async def get_slow_endpoints(
 async def get_log_statistics(
     days: int = Query(7, ge=1, le=30, description="統計期間（日数）"),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_admin_user)
+    current_user: UserBase = Depends(get_current_admin_user)
 ):
     """
     ログの統計情報を取得（管理者専用）
@@ -133,7 +133,7 @@ async def analyze_performance_logs(
     days: int = Query(7, ge=1, le=30, description="分析期間（日数）"),
     min_requests: int = Query(10, ge=1, description="分析対象とする最小リクエスト数"),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_admin_user)
+    current_user: UserBase = Depends(get_current_admin_user)
 ):
     """
     パフォーマンスログの分析結果を取得（管理者専用）
@@ -150,7 +150,7 @@ async def record_client_log(
     log_data: dict,
     background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user)
+    current_user: Optional[UserBase] = Depends(get_current_user)
 ):
     """
     クライアントサイドのログを受け取って保存する

@@ -1,9 +1,8 @@
 # app/db/models/logs.py
 from sqlalchemy import Column, Integer, String, DateTime, Text, JSON, ForeignKey, Index
 from sqlalchemy.sql import func
-from app.database import Base
-
-class ApplicationLog(Base):
+from app.db.base import BaseModel
+class ApplicationLog(BaseModel):
     __tablename__ = "application_logs"
     __table_args__ = (
         Index('idx_app_logs_timestamp_level', 'timestamp', 'level'),
@@ -23,7 +22,7 @@ class ApplicationLog(Base):
     request_id = Column(String, nullable=True, index=True)
     additional_data = Column(JSON, nullable=True)
 
-class AuditLog(Base):
+class AuditLog(BaseModel):
     __tablename__ = "audit_logs"
     __table_args__ = (
         Index('idx_audit_logs_user_action', 'user_id', 'action'),
@@ -43,7 +42,7 @@ class AuditLog(Base):
     user_agent = Column(String, nullable=True)
     additional_data = Column(JSON, nullable=True)  # クライアント固有の情報
 
-class PerformanceLog(Base):
+class PerformanceLog(BaseModel):
     __tablename__ = "performance_logs"
     __table_args__ = (
         Index('idx_perf_logs_endpoint_time', 'endpoint', 'response_time'),
