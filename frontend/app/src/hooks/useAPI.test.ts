@@ -1,0 +1,249 @@
+import { renderHook, act, waitFor } from '@testing-library/react';
+import axios from 'axios';
+import useAPI from './useAPI';
+
+// Axiosのモック
+jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+describe('useAPI', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should initialize with default state', () => {
+        const { result } = renderHook(() => useAPI());
+
+        expect(result.current.data).toBeNull();
+        expect(result.current.loading).toBeFalse();
+        expect(result.current.error).toBeNull();
+        expect(result.current.status).toBeNull();
+    });
+
+    it('should handle successful GET request', async () => {
+        const mockData = { id: 1, name: 'テスト' };
+        mockedAxios.get.mockResolvedValueOnce({
+            data: mockData,
+            status: 200,
+            statusText: 'OK',
+            headers: {},
+            config: {} as any,
+        });
+
+        const { result } = renderHook(() => useAPI());
+
+        let response;
+        await act(async () => {
+            response = await result.current.get('/api/test');
+        });
+
+        expect(mockedAxios.get).toHaveBeenCalledWith('/api/test', {});
+        expect(response?.data).toEqual(mockData);
+        expect(response?.status).toBe(200);
+        expect(response?.isSuccess).toBe(true);
+        expect(response?.isError).toBe(false);
+        
+        expect(result.current.data).toEqual(mockData);
+        expect(result.current.loading).toBe(false);
+        expect(result.current.status).toBe(200);
+    });
+
+    it('should handle failed GET request', async () => {
+        const errorMessage = 'Network Error';
+        mockedAxios.get.mockRejectedValueOnce({
+            message: errorMessage,
+            response: {
+                status: 500,
+                data: { message: '内部サーバーエラー' },
+            },
+        });
+
+        const { result } = renderHook(() => useAPI());
+
+        let response;
+        await act(async () => {
+            response = await result.current.get('/api/test');
+        });
+
+        expect(mockedAxios.get).toHaveBeenCalledWith('/api/test', {});
+        expect(response?.data).toBeNull();
+        expect(response?.error).toBeTruthy();
+        expect(response?.status).toBe(500);
+        expect(response?.isSuccess).toBe(false);
+        expect(response?.isError).toBe(true);
+
+        expect(result.current.data).toBeNull();
+        expect(result.current.loading).toBe(false);
+        expect(result.current.error).toBeTruthy();
+        expect(result.current.status).toBe(500);
+    });
+
+    it('should handle GET request with cache', async () => {
+        const mockData = { id: 1, name: 'テスト' };
+        mockedAxios.get.mockResolvedValueOnce({
+            data: mockData,
+            status: 200,
+            statusText: 'OK',
+            headers: {},
+            config: {} as any,
+        });
+
+        const { result } = renderHook(() => useAPI());
+
+        // 最初のリクエスト（キャッシュに保存される）
+        await act(async () => {
+            await result.current.get('/api/test', {}, { cacheKey: 'test-key' });
+        });
+
+        expect(mockedAxios.get).toHaveBeenCalledTimes(1);
+
+        // 2回目のリクエスト（キャッシュから読み込まれる）
+        await act(async () => {
+            await result.current.get('/api/test', {}, { cacheKey: 'test-key' });
+        });
+
+        // 追加でAPIコールが行われていないことを確認
+        expect(mockedAxios.get).toHaveBeenCalledTimes(1);
+
+        // キャッシュをクリアしてから再度リクエスト
+        await act(async () => {
+            result.current.clearCache('test-key');
+            await result.current.get('/api/test', {}, { cacheKey: 'test-key' });
+        });
+
+        // 新しいAPIコールが行われていることを確認
+        expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+    });
+
+    it('should handle POST request', async () => {
+        const mockData = { id: 1, name: 'テスト' };
+        const mockPostData = { name: 'テスト' };
+        mockedAxios.post.mockResolvedValueOnce({
+            data: mockData,
+            status: 201,
+            statusText: 'Created',
+            headers: {},
+            config: {} as any,
+        });
+
+        const { result } = renderHook(() => useAPI());
+
+        let response;
+        await act(async () => {
+            response = await result.current.post('/api/test', mockPostData);
+        });
+
+        expect(mockedAxios.post).toHaveBeenCalledWith('/api/test', mockPostData, {});
+        expect(response?.data).toEqual(mockData);
+        expect(response?.status).toBe(201);
+        expect(response?.isSuccess).toBe(true);
+
+        expect(result.current.data).toEqual(mockData);
+        expect(result.current.status).toBe(201);
+    });
+
+    it('should handle PUT request', async () => {
+        const mockData = { id: 1, name: 'テスト更新' };
+        const mockPutData = { name: 'テスト更新' };
+        mockedAxios.put.mockResolvedValueOnce({
+            data: mockData,
+            status: 200,
+            statusText: 'OK',
+            headers: {},
+            config: {} as any,
+        });
+
+        const { result } = renderHook(() => useAPI());
+
+        let response;
+        await act(async () => {
+            response = await result.current.put('/api/test/1', mockPutData);
+        });
+
+        expect(mockedAxios.put).toHaveBeenCalledWith('/api/test/1', mockPutData, {});
+        expect(response?.data).toEqual(mockData);
+        expect(response?.status).toBe(200);
+        expect(response?.isSuccess).toBe(true);
+
+        expect(result.current.data).toEqual(mockData);
+        expect(result.current.status).toBe(200);
+    });
+
+    it('should handle DELETE request', async () => {
+        mockedAxios.delete.mockResolvedValueOnce({
+            data: null,
+            status: 204,
+            statusText: 'No Content',
+            headers: {},
+            config: {} as any,
+        });
+
+        const { result } = renderHook(() => useAPI());
+
+        let response;
+        await act(async () => {
+            response = await result.current.delete('/api/test/1');
+        });
+
+        expect(mockedAxios.delete).toHaveBeenCalledWith('/api/test/1', {});
+        expect(response?.status).toBe(204);
+        expect(response?.isSuccess).toBe(true);
+
+        expect(result.current.status).toBe(204);
+    });
+
+    it('should transform response data when transform option provided', async () => {
+        const mockData = { results: [{ id: 1, name: 'テスト' }] };
+        const transformFn = jest.fn((data) => data.results);
+        
+        mockedAxios.get.mockResolvedValueOnce({
+            data: mockData,
+            status: 200,
+            statusText: 'OK',
+            headers: {},
+            config: {} as any,
+        });
+
+        const { result } = renderHook(() => useAPI());
+
+        let response;
+        await act(async () => {
+            response = await result.current.get('/api/test', {}, { transform: transformFn });
+        });
+
+        expect(transformFn).toHaveBeenCalledWith(mockData);
+        expect(response?.data).toEqual([{ id: 1, name: 'テスト' }]);
+        expect(result.current.data).toEqual([{ id: 1, name: 'テスト' }]);
+    });
+
+    it('should retry failed requests when retries > 0', async () => {
+        const errorMessage = 'Network Error';
+        const mockData = { id: 1, name: 'テスト' };
+        
+        // 最初のリクエストは失敗、2回目は成功
+        mockedAxios.get
+            .mockRejectedValueOnce({ message: errorMessage })
+            .mockResolvedValueOnce({
+                data: mockData,
+                status: 200,
+                statusText: 'OK',
+                headers: {},
+                config: {} as any,
+            });
+
+        const { result } = renderHook(() => useAPI());
+
+        let response;
+        await act(async () => {
+            response = await result.current.get('/api/test', {}, { retries: 1, retryDelay: 10 });
+        });
+
+        expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+        expect(response?.data).toEqual(mockData);
+        expect(response?.status).toBe(200);
+        expect(response?.isSuccess).toBe(true);
+
+        expect(result.current.data).toEqual(mockData);
+        expect(result.current.status).toBe(200);
+    });
+});
