@@ -1,6 +1,6 @@
-import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
+import { createBrowserRouter, Outlet } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
-import { Box, Spinner, Center } from '@chakra-ui/react';
+import { Spinner, Center } from '@chakra-ui/react';
 
 // レイアウトコンポーネント
 import MainLayout from '../layouts/MainLayout';
@@ -16,7 +16,7 @@ const NotFoundPage = lazy(() => import('../pages/NotFound'));
  */
 const SuspenseLoader = () => (
     <Center h="100vh">
-        <Spinner size="xl" color="blue.500" thickness="4px" />
+        <Spinner size="xl" color="blue.500" />
     </Center>
 );
 

@@ -1,37 +1,32 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
-import { Box, Center, Spinner } from '@chakra-ui/react';
-import { useAuthState } from '../hooks/useAuth';
+import { Center, Spinner } from '@chakra-ui/react';
+import { useAuthStore } from '../../../hooks/useAuth';
 
 // ページコンポーネントのレイジーロード
-const LoginPage = lazy(() => import('../auth/pages/LoginPage').then(module => ({ default: module.LoginPage })));
-const RegisterPage = lazy(() => import('../auth/pages/RegisterPage').then(module => ({ default: module.RegisterPage })));
-const ForgotPasswordPage = lazy(() => import('../auth/pages/ForgotPasswordPage').then(module => ({ default: module.ForgotPasswordPage })));
-const ResetPasswordPage = lazy(() => import('../auth/pages/ResetPasswordPage').then(module => ({ default: module.ResetPasswordPage })));
+const LoginPage = lazy(() => import('../../../pages/Auth').then(module => ({ default: module.default })));
+const RegisterPage = lazy(() => import('../../../pages/Auth/Register').then(module => ({ default: module.default })));
+const ForgotPasswordPage = lazy(() => import('../../../pages/Auth/ForgotPassword').then(module => ({ default: module.default })));
+const ResetPasswordPage = lazy(() => import('../../../pages/Auth/ResetPassword').then(module => ({ default: module.default })));
 
 // ユーザー関連ページ
-const DashboardPage = lazy(() => import('../user/pages/DashboardPage').then(module => ({ default: module.DashboardPage })));
-const RequestsPage = lazy(() => import('../user/pages/RequestsPage').then(module => ({ default: module.RequestsPage })));
-const RequestDetailPage = lazy(() => import('../user/pages/RequestDetailPage').then(module => ({ default: module.RequestDetailPage })));
-const NewRequestPage = lazy(() => import('../user/pages/NewRequestPage').then(module => ({ default: module.NewRequestPage })));
-const EditRequestPage = lazy(() => import('../user/pages/EditRequestPage').then(module => ({ default: module.EditRequestPage })));
-const HelpersPage = lazy(() => import('../user/pages/HelpersPage').then(module => ({ default: module.HelpersPage })));
-const HelperDetailPage = lazy(() => import('../user/pages/HelperDetailPage').then(module => ({ default: module.HelperDetailPage })));
+const DashboardPage = lazy(() => import('../../user/pages/Dashboard').then(module => ({ default: module.default })));
+const RequestsPage = lazy(() => import('../../user/pages/Requests').then(module => ({ default: module.default })));
+const RequestDetailPage = lazy(() => import('../../user/pages/RequestDetail').then(module => ({ default: module.default })));
+const NewRequestPage = lazy(() => import('../../user/pages/NewRequest').then(module => ({ default: module.default })));
+const EditRequestPage = lazy(() => import('../../user/pages/EditRequest').then(module => ({ default: module.default })));
+const HelpersPage = lazy(() => import('../../user/pages/Helpers').then(module => ({ default: module.default })));
+const HelperDetailPage = lazy(() => import('../../user/pages/HelperDetail').then(module => ({ default: module.default })));
 
 // エラーページ
-const NotFoundPage = lazy(() => import('../common/pages/NotFoundPage').then(module => ({ default: module.NotFoundPage })));
+const NotFoundPage = lazy(() => import('../../../pages/NotFound').then(module => ({ default: module.default })));
 
 /**
  * ロード中表示のコンポーネント
  */
-const LoadingFallback = () => (
-  <Center h="100vh">
-    <Spinner 
+const LoadingFallback = () => (  <Center h="100vh">    <Spinner 
       size="xl" 
-      thickness="4px" 
-      color="blue.500" 
-      emptyColor="gray.200" 
-      speed="0.65s"
+      color="blue.500"
     />
   </Center>
 );
@@ -39,8 +34,8 @@ const LoadingFallback = () => (
 /**
  * 認証が必要なルートのラッパーコンポーネント
  */
-const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  const { isAuthenticated, isLoading } = useAuthState();
+const ProtectedRoute = ({ children }: { children: React.ReactElement }) => {
+  const { isAuthenticated, loading: isLoading } = useAuthStore();
   
   if (isLoading) {
     return <LoadingFallback />;
@@ -56,8 +51,8 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
 /**
  * 未認証ユーザー専用ルートのラッパーコンポーネント
  */
-const PublicRoute = ({ children }: { children: JSX.Element }) => {
-  const { isAuthenticated, isLoading } = useAuthState();
+const PublicRoute = ({ children }: { children: React.ReactElement }) => {
+  const { isAuthenticated, loading: isLoading } = useAuthStore();
   
   if (isLoading) {
     return <LoadingFallback />;
