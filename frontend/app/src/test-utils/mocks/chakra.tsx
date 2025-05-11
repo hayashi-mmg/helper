@@ -1,4 +1,6 @@
-import React from 'react';
+import { Component, createElement } from 'react';
+
+
 
 // ChakraProvider用のモック
 export const ChakraProvider = ({ children }: { children: React.ReactNode }) => <>{children}</>;
