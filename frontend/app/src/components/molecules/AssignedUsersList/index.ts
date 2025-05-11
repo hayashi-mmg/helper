@@ -1,0 +1,1 @@
+export { AssignedUsersList } from './AssignedUsersList';
