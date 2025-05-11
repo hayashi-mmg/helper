@@ -1,4 +1,3 @@
-import { mode } from '@chakra-ui/theme';
 import { type Dict, type StyleFunctionProps } from '@chakra-ui/react';
 
 /**
@@ -6,14 +5,16 @@ import { type Dict, type StyleFunctionProps } from '@chakra-ui/react';
  * アプリ全体に一貫したスタイルを適用するために使用
  */
 const globalStyles = {
-  global: (props: StyleFunctionProps) => ({
+  global: (props: StyleFunctionProps) => {
+    const { colorMode } = props;
+    return {
     // HTMLとbodyのスタイル
     'html, body': {
       fontSize: 'md',
       fontFamily: 'body',
       lineHeight: 'tall',
-      color: mode('gray.800', 'whiteAlpha.900')(props),
-      bg: mode('gray.50', 'gray.900')(props),
+      color: colorMode === 'light' ? 'gray.800' : 'whiteAlpha.900',
+      bg: colorMode === 'light' ? 'gray.50' : 'gray.900',
       minHeight: '100vh',
       WebkitFontSmoothing: 'antialiased',
       MozOsxFontSmoothing: 'grayscale',
@@ -21,7 +22,7 @@ const globalStyles = {
     
     // フォーカス状態のスタイル（アクセシビリティ対応）
     '*:focus, *[data-focus]': {
-      outlineColor: mode('brand.500', 'brand.300')(props),
+      outlineColor: colorMode === 'light' ? 'brand.500' : 'brand.300',
       outlineWidth: '2px',
       outlineStyle: 'solid',
       outlineOffset: '2px',
@@ -33,14 +34,14 @@ const globalStyles = {
       height: '10px',
     },
     '::-webkit-scrollbar-track': {
-      bg: mode('gray.100', 'gray.700')(props),
+      bg: colorMode === 'light' ? 'gray.100' : 'gray.700',
     },
     '::-webkit-scrollbar-thumb': {
-      bg: mode('gray.300', 'gray.600')(props),
+      bg: colorMode === 'light' ? 'gray.300' : 'gray.600',
       borderRadius: '5px',
       
       '&:hover': {
-        bg: mode('gray.400', 'gray.500')(props),
+        bg: colorMode === 'light' ? 'gray.400' : 'gray.500',
       },
     },
     
@@ -53,7 +54,7 @@ const globalStyles = {
     
     // リンクスタイル
     a: {
-      color: mode('brand.600', 'brand.300')(props),
+      color: colorMode === 'light' ? 'brand.600' : 'brand.300',
       textDecoration: 'none',
       
       '&:hover': {
@@ -65,7 +66,8 @@ const globalStyles = {
     'ul, ol': {
       paddingLeft: '1.5rem',
     },
-  }),
+    };
+  },
 } as Dict<any>;
 
 export default globalStyles;

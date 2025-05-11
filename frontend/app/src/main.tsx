@@ -3,8 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { initializeMocks } from './mocks/browser'
-import { ChakraProvider } from '@chakra-ui/react'
-import theme from './styles/theme'
+import { CustomChakraProvider } from './providers/ChakraProvider'
 
 // 開発環境でモックサーバーを初期化
 async function bootstrap() {
@@ -14,9 +13,9 @@ async function bootstrap() {
   // Reactアプリのレンダリング
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
-      <ChakraProvider theme={theme}>
+      <CustomChakraProvider>
         <App />
-      </ChakraProvider>
+      </CustomChakraProvider>
     </StrictMode>,
   );
 }

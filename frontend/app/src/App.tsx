@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import './App.css';
 import { setupCspViolationReporting } from './utils/security';
-import { ChakraProvider } from './providers/ChakraProvider';
+import { CustomChakraProvider } from './providers/ChakraProvider';
 import { QueryProvider } from './providers/QueryProvider';
 import { AuthProvider } from './features/auth/providers/AuthProvider';
 import { AppRouter } from './features/common/routes/AppRouter';
@@ -31,11 +31,11 @@ function App() {
 
     return (
         <QueryProvider>
-            <ChakraProvider>
+            <CustomChakraProvider>
                 <AuthProvider>
                     <AppRouter />
                 </AuthProvider>
-            </ChakraProvider>
+            </CustomChakraProvider>
         </QueryProvider>
     );
 }
