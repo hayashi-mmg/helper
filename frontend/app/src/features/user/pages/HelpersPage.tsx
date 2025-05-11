@@ -1,9 +1,6 @@
-import { useState } from "react";
-import { 
-  Box,
+import {
   Button,
   Flex,
-  Grid,
   Text,
   Input,
   InputGroup,
@@ -13,17 +10,21 @@ import {
   Spinner,
   Center
 } from "@chakra-ui/react";
-import { FiSearch, FiFilter } from "react-icons/fi";
+import { useState } from "react";
+import { FiSearch } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+
+import Header from "../../common/components/Header";
+import Sidebar from "../../common/components/Sidebar";
 import { 
   DashboardContent, 
   DashboardLayout, 
   HelperCard 
 } from "../components";
 import { useHelpers } from "../hooks/useHelperHooks";
-import Header from "../../common/components/Header";
-import Sidebar from "../../common/components/Sidebar";
 import { HelperFilter, HelperSkill, HelperStatus } from "../types";
+
+
 
 /**
  * ヘルパー一覧ページ

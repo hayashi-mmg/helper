@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
+
 import './App.css';
-import { setupCspViolationReporting } from './utils/security';
-import { CustomChakraProvider } from './providers/ChakraProvider';
-import { QueryProvider } from './providers/QueryProvider';
 import { AuthProvider } from './features/auth/providers/AuthProvider';
 import { AppRouter } from './features/common/routes/AppRouter';
+import { CustomChakraProvider } from './providers/ChakraProvider';
+import { QueryProvider } from './providers/QueryProvider';
+import { setupCspViolationReporting } from './utils/security';
 
 /**
  * アプリケーションのルートコンポーネント

@@ -14,6 +14,9 @@ import {
 } from "@chakra-ui/react";
 import { FiArrowLeft, FiCalendar, FiMail } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
+
+import Header from "../../common/components/Header";
+import Sidebar from "../../common/components/Sidebar";
 import { 
   DashboardContent, 
   DashboardLayout, 
@@ -22,8 +25,6 @@ import {
   HelperAvailability
 } from "../components";
 import { useHelper } from "../hooks/useHelperHooks";
-import Header from "../../common/components/Header";
-import Sidebar from "../../common/components/Sidebar";
 
 /**
  * ヘルパー詳細ページ
