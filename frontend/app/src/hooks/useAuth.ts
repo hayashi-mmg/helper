@@ -45,7 +45,7 @@ type AuthStore = AuthState & AuthActions;
 /**
  * 認証情報を管理するZustandストア
  */
-const useAuthStore = create<AuthStore>()(
+export const useAuthStore = create<AuthStore>()(
     persist(
         (set, get) => ({
             isAuthenticated: false,

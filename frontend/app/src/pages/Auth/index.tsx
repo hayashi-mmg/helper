@@ -26,24 +26,11 @@ const AuthPage = (): JSX.Element => {
                             <Tab>ログイン</Tab>
                             <Tab>新規登録</Tab>
                         </TabList>
-                        <TabPanels>
-                            <TabPanel p={0} pt={4}>
-                                {/* ログインフォームコンポーネントは将来的に実装 */}
-                                <Box textAlign="center">
-                                    <Text>ログインフォーム</Text>
-                                    <Text color="gray.500" fontSize="sm" mt={4}>
-                                        ログインフォームは将来的に実装されます。
-                                    </Text>
-                                </Box>
+                        <TabPanels>                            <TabPanel p={0} pt={4}>
+                                <LoginForm />
                             </TabPanel>
                             <TabPanel p={0} pt={4}>
-                                {/* 新規登録フォームコンポーネントは将来的に実装 */}
-                                <Box textAlign="center">
-                                    <Text>新規登録フォーム</Text>
-                                    <Text color="gray.500" fontSize="sm" mt={4}>
-                                        新規登録フォームは将来的に実装されます。
-                                    </Text>
-                                </Box>
+                                <RegisterForm />
                             </TabPanel>
                         </TabPanels>
                     </Tabs>
