@@ -1,6 +1,7 @@
-import React, { ReactNode, ButtonHTMLAttributes, AnchorHTMLAttributes, forwardRef } from 'react';
+import { ReactNode, ButtonHTMLAttributes, AnchorHTMLAttributes, forwardRef } from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
+import { Component, forwardRef } from 'react';
 
 /**
  * ボタンのサイズバリエーション

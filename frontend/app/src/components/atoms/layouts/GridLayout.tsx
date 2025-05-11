@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Box, SimpleGrid, SimpleGridProps } from '@chakra-ui/react';
 
 export interface GridLayoutProps extends Omit<SimpleGridProps, 'columns'> {

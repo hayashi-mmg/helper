@@ -4,6 +4,7 @@ import { createMemoryHistory } from 'history';
 import { ChakraProvider } from '@chakra-ui/react';
 import { useAuthStore } from '../../../store/useAuthStore';
 import AuthStatus from './AuthStatus';
+import { Component } from 'react';
 
 // モック設定
 jest.mock('../../../store/useAuthStore');

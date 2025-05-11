@@ -1,8 +1,9 @@
-import React from 'react';
+
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Button, Text } from '@chakra-ui/react';
 import { Modal, useModal } from './index';
+import { Component } from 'react';
 
 // モーダルのテスト用にプロバイダーでラップしたレンダー関数
 const renderModal = (props: any) => {

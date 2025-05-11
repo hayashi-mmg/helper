@@ -1,6 +1,7 @@
-import React from 'react';
+
 import { render, screen, fireEvent } from '../../../test-utils/providers';
 import SelectInput from './SelectInput';
+import { Component } from 'react';
 
 describe('SelectInput Component', () => {
     const mockOptions = [

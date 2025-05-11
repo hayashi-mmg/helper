@@ -1,6 +1,7 @@
-import React from 'react';
+
 import type { ReactNode, HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
+import { Component } from 'react';
 
 export type TypographyVariant = 
   | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'

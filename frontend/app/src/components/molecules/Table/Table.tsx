@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import classNames from 'classnames';
 import { Typography } from '../../atoms/Typography';
 import { Button } from '../../atoms/Button';
 import { Checkbox } from '../../atoms/Checkbox';
+import { useState, useEffect, useMemo } from 'react';
 import {
   tableStyles,
   tableHeaderStyles,

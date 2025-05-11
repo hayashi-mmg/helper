@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import {
     FormControl,
     FormLabel,
@@ -18,6 +18,7 @@ import {
     Progress,
 } from '@chakra-ui/react';
 import { AttachmentIcon, CloseIcon, DownloadIcon } from '@chakra-ui/icons';
+import { useState, useRef } from 'react';
 
 export interface FileInfo {
     /**

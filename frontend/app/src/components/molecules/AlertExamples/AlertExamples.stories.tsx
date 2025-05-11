@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import Notification from '../Notification';
 import styled from 'styled-components';
+import { useState } from 'react';
 
 // アラートコンポーネントをまとめたサンプル用のコンポーネント
 const AlertExamples: React.FC = () => {

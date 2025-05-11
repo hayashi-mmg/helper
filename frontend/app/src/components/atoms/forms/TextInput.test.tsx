@@ -1,7 +1,8 @@
-import React from 'react';
+
 import { render, screen, fireEvent } from '../../../test-utils/providers';
 import { SearchIcon } from '@chakra-ui/icons';
 import TextInput from './TextInput';
+import { Component } from 'react';
 
 describe('TextInput Component', () => {
     it('renders with label correctly', () => {

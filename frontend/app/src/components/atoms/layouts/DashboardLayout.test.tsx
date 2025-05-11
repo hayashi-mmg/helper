@@ -1,6 +1,7 @@
-import React from 'react';
+
 import { render, screen } from '../../../test-utils/providers';
 import DashboardLayout from './DashboardLayout';
+import { Component } from 'react';
 
 describe('DashboardLayout Component', () => {
     it('renders with the main layout and content', () => {

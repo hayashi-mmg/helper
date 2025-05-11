@@ -1,6 +1,7 @@
-import React from 'react';
+
 import { render, screen } from '../../../test-utils/providers';
 import AuthLayout from './AuthLayout';
+import { Component } from 'react';
 
 describe('AuthLayout Component', () => {
     it('renders children correctly', () => {

@@ -1,7 +1,8 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import { Button, Box, Text, Input, VStack, HStack } from '@chakra-ui/react';
 import { Modal, useModal } from './index';
+import { useRef } from 'react';
 
 /**
  * モーダル/ダイアログコンポーネント

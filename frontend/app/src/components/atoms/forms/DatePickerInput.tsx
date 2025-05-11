@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from 'react';
+import { forwardRef, useState } from 'react';
 import {
     FormControl,
     FormLabel,
@@ -13,6 +13,7 @@ import { CalendarIcon } from '@chakra-ui/icons';
 import DatePicker, { ReactDatePickerProps, registerLocale } from 'react-datepicker';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
+import { useState, forwardRef } from 'react';
 
 // 日本語ローカライズを登録
 registerLocale('ja', ja);

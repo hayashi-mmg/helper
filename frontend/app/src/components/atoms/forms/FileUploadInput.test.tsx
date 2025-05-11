@@ -1,6 +1,7 @@
-import React from 'react';
+
 import { render, screen, fireEvent, waitFor } from '../../../test-utils/providers';
 import FileUploadInput, { FileInfo } from './FileUploadInput';
+import { Component } from 'react';
 
 // ファイルオブジェクトのモック作成
 const createMockFile = (name: string, size: number, type: string): File => {

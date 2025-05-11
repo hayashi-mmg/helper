@@ -1,6 +1,7 @@
-import React from 'react';
+
 import { render, screen, fireEvent } from '../../../test-utils/providers';
 import RadioGroupInput from './RadioGroupInput';
+import { Component } from 'react';
 
 describe('RadioGroupInput Component', () => {
     const mockOptions = [

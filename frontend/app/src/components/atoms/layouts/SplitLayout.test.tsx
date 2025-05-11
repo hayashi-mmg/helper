@@ -1,6 +1,7 @@
-import React from 'react';
+
 import { render, screen, fireEvent } from '../../../test-utils/providers';
 import SplitLayout from './SplitLayout';
+import { Component } from 'react';
 
 // BoundingClientRectをモック
 const mockGetBoundingClientRect = jest.fn(() => ({

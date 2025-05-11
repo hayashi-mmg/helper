@@ -1,8 +1,8 @@
-import React from 'react';
+
 import { Box, Flex, Heading, HeadingProps, Divider, useColorModeValue } from '@chakra-ui/react';
 import Card, { CardProps } from './Card';
 
-export interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {
     /**
      * カードのタイトル
      */
@@ -24,14 +24,14 @@ export interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
     [key: string]: any;
 }
 
-export interface CardBodyProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface CardBodyProps extends HTMLAttributes<HTMLDivElement> {
     /**
      * ボディの追加のスタイル
      */
     [key: string]: any;
 }
 
-export interface CardFooterProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface CardFooterProps extends HTMLAttributes<HTMLDivElement> {
     /**
      * フッターの追加のスタイル
      */

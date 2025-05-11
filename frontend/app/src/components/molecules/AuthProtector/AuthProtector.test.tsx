@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { useAuthStore } from '../../../store/useAuthStore';
 import AuthProtector from './AuthProtector';
+import { Component } from 'react';
 
 // モック設定
 jest.mock('../../../store/useAuthStore');

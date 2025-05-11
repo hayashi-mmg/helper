@@ -1,6 +1,7 @@
-import React, { ReactNode, useState, useEffect } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { createPortal } from 'react-dom';
+import { useState, useEffect } from 'react';
 
 /**
  * 通知タイプの定義

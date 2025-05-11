@@ -1,6 +1,7 @@
-import React from 'react';
+
 import { render, screen, fireEvent } from '../../../test-utils/providers';
 import DatePickerInput from './DatePickerInput';
+import { Component, cloneElement } from 'react';
 
 // react-datepickerモジュールをモック
 jest.mock('react-datepicker', () => {

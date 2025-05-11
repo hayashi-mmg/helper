@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Box, Flex, useBreakpointValue, IconButton } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
+import { useState } from 'react';
 
 export interface MainLayoutProps {
     /**

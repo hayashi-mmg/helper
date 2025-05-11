@@ -1,6 +1,7 @@
-import React from 'react';
+
 import { render, screen, fireEvent } from '../../../test-utils/providers';
 import MainLayout from './MainLayout';
+import { Component } from 'react';
 
 describe('MainLayout Component', () => {
     it('renders with all sections by default', () => {

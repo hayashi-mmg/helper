@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Box, BoxProps } from '@chakra-ui/react';
 
 export interface ContentContainerProps extends Omit<BoxProps, 'maxWidth'> {

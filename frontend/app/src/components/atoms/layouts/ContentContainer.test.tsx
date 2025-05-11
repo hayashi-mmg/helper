@@ -1,6 +1,7 @@
-import React from 'react';
+
 import { render, screen } from '../../../test-utils/providers';
 import ContentContainer from './ContentContainer';
+import { Component } from 'react';
 
 describe('ContentContainer Component', () => {
     it('renders children correctly', () => {

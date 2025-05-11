@@ -1,7 +1,8 @@
-import React, { ReactNode, useState, useCallback, useEffect } from 'react';
+import { ReactNode, useState, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 import Notification, { NotificationType, NotificationPosition } from '../Notification';
+import { useState, useEffect, useContext, useCallback, createContext } from 'react';
 
 /**
  * トーストの設定オプション

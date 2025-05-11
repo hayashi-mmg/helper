@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Box, Flex, useMergeRefs } from '@chakra-ui/react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 export interface SplitLayoutProps {
     /**

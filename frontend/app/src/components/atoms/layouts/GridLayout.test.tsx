@@ -1,6 +1,7 @@
-import React from 'react';
+
 import { render, screen } from '../../../test-utils/providers';
 import { GridLayout, GridItem } from './GridLayout';
+import { Component } from 'react';
 
 describe('GridLayout and GridItem Components', () => {
     it('renders children correctly', () => {

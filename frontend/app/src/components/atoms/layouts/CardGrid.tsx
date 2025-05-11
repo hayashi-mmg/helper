@@ -1,5 +1,6 @@
-import React from 'react';
+
 import { Box } from '@chakra-ui/react';
+import { Children } from 'react';
 
 export interface CardGridProps {
     /**
@@ -99,7 +100,7 @@ export const CardGrid: React.FC<CardGridProps> = ({
             }}
             data-testid="card-grid"
         >
-            {React.Children.map(children, (child, index) => (
+            {Children.map(children, (child, index) => (
                 <Box
                     key={index}
                     className="card-grid__item"

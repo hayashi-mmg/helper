@@ -1,6 +1,7 @@
-import React from 'react';
+
 import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import { ToastManagerProvider, useToast } from './ToastManager';
+import { Component } from 'react';
 
 // テスト用コンポーネント
 const TestComponent: React.FC = () => {

@@ -1,6 +1,7 @@
-import React from 'react';
+
 import { render, screen, fireEvent } from '../../../test-utils/providers';
 import EditorLayout from './EditorLayout';
+import { Component } from 'react';
 
 describe('EditorLayout Component', () => {
     it('renders title and content correctly', () => {

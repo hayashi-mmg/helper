@@ -1,6 +1,7 @@
-import React from 'react';
+
 import { render, screen } from '../../../test-utils/providers';
 import CardGrid from './CardGrid';
+import { Component } from 'react';
 
 describe('CardGrid Component', () => {
     it('renders children correctly', () => {

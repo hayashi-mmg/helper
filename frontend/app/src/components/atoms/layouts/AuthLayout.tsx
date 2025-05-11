@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Box, Flex, Image, useColorModeValue } from '@chakra-ui/react';
 
 export interface AuthLayoutProps {

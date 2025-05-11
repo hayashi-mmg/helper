@@ -1,7 +1,8 @@
-import React from 'react';
+
 import { render, screen } from '@testing-library/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import Card from './Card';
+import { Component } from 'react';
 
 // ChakraUIを使用したコンポーネントのテスト用ラッパー
 const renderWithChakra = (ui: React.ReactElement) => {

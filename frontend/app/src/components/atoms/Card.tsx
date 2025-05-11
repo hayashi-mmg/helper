@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Box, BoxProps, useColorModeValue } from '@chakra-ui/react';
 
 export type ShadowSize = 'none' | 'sm' | 'md' | 'lg' | 'xl';

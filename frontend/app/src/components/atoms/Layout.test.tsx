@@ -1,6 +1,7 @@
-import React from 'react';
+
 import { render } from '../../test-utils/providers';
 import Layout from './Layout';
+import { Component } from 'react';
 
 describe('Layout Component', () => {
     it('renders children correctly', () => {
