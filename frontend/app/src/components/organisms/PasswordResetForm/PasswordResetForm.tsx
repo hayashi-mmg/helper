@@ -18,6 +18,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link as RouterLink } from 'react-router-dom';
+import { useState } from 'react';
 
 // バリデーションスキーマ
 const passwordResetSchema = z.object({

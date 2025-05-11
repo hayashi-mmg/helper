@@ -20,6 +20,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuthStore } from '../../../store/useAuthStore';
 import { Link as RouterLink } from 'react-router-dom';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
+import { useState } from 'react';
 
 // バリデーションスキーマ
 const loginSchema = z.object({

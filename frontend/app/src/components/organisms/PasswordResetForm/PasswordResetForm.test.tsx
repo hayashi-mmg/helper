@@ -2,6 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { ChakraProvider } from '@chakra-ui/react';
 import PasswordResetForm from './PasswordResetForm';
+import { Component } from 'react';
 
 // テスト用のラッパーコンポーネント
 const renderWithProviders = (ui: React.ReactElement) => {

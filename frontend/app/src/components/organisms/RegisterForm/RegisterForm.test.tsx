@@ -3,6 +3,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ChakraProvider } from '@chakra-ui/react';
 import RegisterForm from './RegisterForm';
 import { useAuthStore } from '../../../store/useAuthStore';
+import { Component } from 'react';
 
 // モック設定
 jest.mock('../../../store/useAuthStore');

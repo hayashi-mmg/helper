@@ -2,6 +2,7 @@ import { Box, Heading, Button, FormControl, FormLabel, Input, Stack, Text, Link,
 import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useAuthStore } from '../../../hooks/useAuth';
+import { useState } from 'react';
 
 /**
  * ユーザー登録ページコンポーネント

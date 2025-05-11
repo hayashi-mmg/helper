@@ -2,6 +2,7 @@ import { Box, Button, FormControl, FormLabel, Heading, Input, Stack, Text, FormE
 import { useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../../hooks/useAuth';
+import { useState } from 'react';
 
 /**
  * パスワード再設定ページコンポーネント
@@ -56,10 +57,10 @@ const ResetPasswordPage = () => {
             });
             return;
         }
-        
-        try {
-            // パスワード再設定APIを呼び出す（実装必要）
-            // await resetPasswordWithToken(token, password);
+          try {
+            // 認証サービスを使用してパスワードリセットを実行
+            const authService = (await import('../../../services/authService')).default;
+            await authService.confirmPasswordReset(token, password);
             
             setIsCompleted(true);
             toast({
