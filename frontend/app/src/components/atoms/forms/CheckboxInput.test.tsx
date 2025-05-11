@@ -1,6 +1,7 @@
-import React from 'react';
+
 import { render, screen, fireEvent } from '../../../test-utils/providers';
 import CheckboxInput from './CheckboxInput';
+import { Component } from 'react';
 
 describe('CheckboxInput Component', () => {
     // 単一チェックボックスのテスト

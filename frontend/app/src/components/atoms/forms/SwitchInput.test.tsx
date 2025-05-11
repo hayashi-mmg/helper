@@ -1,6 +1,7 @@
-import React from 'react';
+
 import { render, screen, fireEvent } from '../../../test-utils/providers';
 import SwitchInput from './SwitchInput';
+import { Component } from 'react';
 
 describe('SwitchInput Component', () => {
     it('renders with label correctly', () => {

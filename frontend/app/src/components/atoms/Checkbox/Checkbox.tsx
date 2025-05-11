@@ -1,5 +1,6 @@
-import React, { forwardRef, InputHTMLAttributes } from 'react';
+import { forwardRef, InputHTMLAttributes } from 'react';
 import styled from 'styled-components';
+import { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 
 export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
   /**
