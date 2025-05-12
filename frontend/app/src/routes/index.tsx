@@ -1,10 +1,9 @@
 import { createBrowserRouter, Outlet } from 'react-router-dom';
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, Component } from 'react';
 import { Spinner, Center } from '@chakra-ui/react';
 
 // レイアウトコンポーネント
 import MainLayout from '../layouts/MainLayout';
-import { Component, lazy, Suspense } from 'react';
 
 // ページコンポーネントの遅延ロード
 const HomePage = lazy(() => import('../pages/Home'));

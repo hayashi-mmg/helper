@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Suspense, lazy } from 'react';
 import { Center, Spinner } from '@chakra-ui/react';
 import { useAuthStore } from '../../../hooks/useAuth';
-import { lazy, Suspense } from 'react';
 
 // ページコンポーネントのレイジーロード
 const LoginPage = lazy(() => import('../../../pages/Auth').then(module => ({ default: module.default })));
