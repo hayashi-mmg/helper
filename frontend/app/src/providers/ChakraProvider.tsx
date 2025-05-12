@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
-import { ColorModeScript } from '@chakra-ui/color-mode';
 
 import { system } from '../styles/theme';
 
@@ -15,7 +14,7 @@ interface ChakraProviderProps {
 export function CustomChakraProvider({ children }: ChakraProviderProps) {
   return (
     <>
-      <ColorModeScript initialColorMode="light" />
+      {/* Chakra UI v3では、ColorModeScriptは削除され、代わりにclassNameで指定します */}
       <ChakraProvider value={system}>
         {children}
       </ChakraProvider>

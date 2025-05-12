@@ -6,6 +6,7 @@ import { AppRouter } from './features/common/routes/AppRouter';
 import { CustomChakraProvider } from './providers/ChakraProvider';
 import { QueryProvider } from './providers/QueryProvider';
 import { setupCspViolationReporting } from './utils/security';
+import ErrorBoundary from './components/common/ErrorBoundary';
 
 /**
  * アプリケーションのルートコンポーネント
@@ -31,13 +32,15 @@ function App() {
     }, []);
 
     return (
-        <QueryProvider>
-            <CustomChakraProvider>
-                <AuthProvider>
-                    <AppRouter />
-                </AuthProvider>
-            </CustomChakraProvider>
-        </QueryProvider>
+        <ErrorBoundary>
+            <QueryProvider>
+                <CustomChakraProvider>
+                    <AuthProvider>
+                        <AppRouter />
+                    </AuthProvider>
+                </CustomChakraProvider>
+            </QueryProvider>
+        </ErrorBoundary>
     );
 }
 
