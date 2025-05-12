@@ -30,7 +30,7 @@ try:
     origins = json.loads(settings.backend_cors_origins)
 except (json.JSONDecodeError, AttributeError):
     # 設定読み込みに失敗した場合はデフォルト値を使用
-    origins = ["http://localhost:3000", "http://localhost:8080"]
+    origins = ["http://localhost:3000", "http://localhost:8080","http://localhost:5173"]
 
 app.add_middleware(
     CORSMiddleware,
