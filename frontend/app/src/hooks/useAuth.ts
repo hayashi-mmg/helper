@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import apiClient from '../lib/axios';
+import { getEnv } from '../utils/env';
 
 /**
  * 認証情報の型定義
@@ -62,12 +63,12 @@ export const useAuthStore = create<AuthStore>()(
             login: async (email: string, password: string) => {
                 set({ loading: true, error: null });
                 try {
-                    // APIリクエスト
-                    const response = await axios.post('/api/v1/auth/login', { email, password });
-                    const { user, token } = response.data;
+                    const response = await apiClient.post('/auth/login', { email, password });
+                    const { data } = response.data;
+                    const { token, user } = data;
 
-                    // ヘッダーにトークンを設定
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                    // トークンを設定
+                    apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
                     set({
                         isAuthenticated: true,
@@ -76,11 +77,13 @@ export const useAuthStore = create<AuthStore>()(
                         loading: false,
                     });
                 } catch (error) {
+                    console.error('Login error:', error);
                     set({
                         loading: false,
                         error: error instanceof Error ? error.message : '認証エラーが発生しました',
                         isAuthenticated: false,
                     });
+                    throw error;
                 }
             },
 
@@ -89,7 +92,7 @@ export const useAuthStore = create<AuthStore>()(
              */
             logout: () => {
                 // ヘッダーからトークンを削除
-                delete axios.defaults.headers.common['Authorization'];
+                delete apiClient.defaults.headers.common['Authorization'];
 
                 set({
                     isAuthenticated: false,
@@ -108,15 +111,15 @@ export const useAuthStore = create<AuthStore>()(
             register: async (username: string, email: string, password: string) => {
                 set({ loading: true, error: null });
                 try {
-                    const response = await axios.post('/api/v1/auth/register', {
+                    const response = await apiClient.post('/auth/register', {
                         username,
                         email,
                         password,
                     });
                     const { user, token } = response.data;
 
-                    // ヘッダーにトークンを設定
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                    // トークンを設定
+                    apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
                     set({
                         isAuthenticated: true,
@@ -139,7 +142,7 @@ export const useAuthStore = create<AuthStore>()(
             resetPassword: async (email: string) => {
                 set({ loading: true, error: null });
                 try {
-                    await axios.post('/api/v1/auth/reset-password', { email });
+                    await apiClient.post('/auth/reset-password', { email });
                     set({ loading: false });
                 } catch (error) {
                     set({
@@ -159,7 +162,7 @@ export const useAuthStore = create<AuthStore>()(
 
                 set({ loading: true, error: null });
                 try {
-                    const response = await axios.put(`/api/v1/users/${user.id}`, userData);
+                    const response = await apiClient.put(`/users/${user.id}`, userData);
                     set({
                         user: { ...user, ...response.data },
                         loading: false,
@@ -223,7 +226,7 @@ const useAuth = () => {
     // トークンがある場合はAxiosのヘッダーに設定
     useEffect(() => {
         if (token) {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         }
     }, [token]);
 

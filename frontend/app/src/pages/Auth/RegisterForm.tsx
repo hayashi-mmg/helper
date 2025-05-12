@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { Button, FormControl, FormLabel, Input, FormErrorMessage, VStack, Text, Link, Flex } from '@chakra-ui/react';
+import { Button, VStack, Text, Link, Flex, Input, Field } from '@chakra-ui/react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../hooks/useAuth';
 import { getAuthErrorMessage } from '../../utils/errorHandler';
-import { useState } from 'react';
 
 /**
  * 新規登録フォームコンポーネント
@@ -90,19 +89,19 @@ const RegisterForm = () => {
           </Text>
         )}
 
-        <FormControl isInvalid={isNameError}>
-          <FormLabel htmlFor="name">お名前</FormLabel>
+        <Field.Root invalid={isNameError}>
+          <Field.Label htmlFor="name">お名前</Field.Label>
           <Input
             id="name"
             placeholder="山田 太郎"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          {isNameError && <FormErrorMessage>お名前が必要です</FormErrorMessage>}
-        </FormControl>
+          {isNameError && <Field.ErrorText>お名前が必要です</Field.ErrorText>}
+        </Field.Root>
 
-        <FormControl isInvalid={isEmailError}>
-          <FormLabel htmlFor="email">メールアドレス</FormLabel>
+        <Field.Root invalid={isEmailError}>
+          <Field.Label htmlFor="email">メールアドレス</Field.Label>
           <Input
             id="email"
             type="email"
@@ -110,11 +109,11 @@ const RegisterForm = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          {isEmailError && <FormErrorMessage>メールアドレスが必要です</FormErrorMessage>}
-        </FormControl>
+          {isEmailError && <Field.ErrorText>メールアドレスが必要です</Field.ErrorText>}
+        </Field.Root>
 
-        <FormControl isInvalid={isPasswordError}>
-          <FormLabel htmlFor="password">パスワード</FormLabel>
+        <Field.Root invalid={isPasswordError}>
+          <Field.Label htmlFor="password">パスワード</Field.Label>
           <Input
             id="password"
             type="password"
@@ -122,11 +121,11 @@ const RegisterForm = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          {isPasswordError && <FormErrorMessage>パスワードが必要です</FormErrorMessage>}
-        </FormControl>
+          {isPasswordError && <Field.ErrorText>パスワードが必要です</Field.ErrorText>}
+        </Field.Root>
 
-        <FormControl isInvalid={isConfirmPasswordError}>
-          <FormLabel htmlFor="confirmPassword">パスワード（確認）</FormLabel>
+        <Field.Root invalid={isConfirmPasswordError}>
+          <Field.Label htmlFor="confirmPassword">パスワード（確認）</Field.Label>
           <Input
             id="confirmPassword"
             type="password"
@@ -135,11 +134,11 @@ const RegisterForm = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
           {isConfirmPasswordError && (
-            <FormErrorMessage>
+            <Field.ErrorText>
               {confirmPassword === '' ? 'パスワード（確認）が必要です' : 'パスワードが一致しません'}
-            </FormErrorMessage>
+            </Field.ErrorText>
           )}
-        </FormControl>
+        </Field.Root>
 
         <Button
           type="submit"

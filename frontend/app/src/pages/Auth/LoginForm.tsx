@@ -1,10 +1,9 @@
-import { Button, FormControl, FormLabel, Input, FormErrorMessage, VStack, Link, Text, Flex } from '@chakra-ui/react';
+import { Button, VStack, Link, Text, Flex, Input, Field } from '@chakra-ui/react';
 import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '../../hooks/useAuth';
 import { getAuthErrorMessage } from '../../utils/errorHandler';
-import { useState } from 'react';
 
 /**
  * ログインフォームコンポーネント
@@ -70,8 +69,8 @@ const LoginForm = () => {
           </Text>
         )}
 
-        <FormControl isInvalid={isEmailError}>
-          <FormLabel htmlFor="email">メールアドレス</FormLabel>
+        <Field.Root invalid={isEmailError}>
+          <Field.Label htmlFor="email">メールアドレス</Field.Label>
           <Input
             id="email"
             type="email"
@@ -79,11 +78,11 @@ const LoginForm = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          {isEmailError && <FormErrorMessage>メールアドレスが必要です</FormErrorMessage>}
-        </FormControl>
+          {isEmailError && <Field.ErrorText>メールアドレスが必要です</Field.ErrorText>}
+        </Field.Root>
 
-        <FormControl isInvalid={isPasswordError}>
-          <FormLabel htmlFor="password">パスワード</FormLabel>
+        <Field.Root invalid={isPasswordError}>
+          <Field.Label htmlFor="password">パスワード</Field.Label>
           <Input
             id="password"
             type="password"
@@ -91,8 +90,8 @@ const LoginForm = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          {isPasswordError && <FormErrorMessage>パスワードが必要です</FormErrorMessage>}
-        </FormControl>
+          {isPasswordError && <Field.ErrorText>パスワードが必要です</Field.ErrorText>}
+        </Field.Root>
 
         <Button
           type="submit"
